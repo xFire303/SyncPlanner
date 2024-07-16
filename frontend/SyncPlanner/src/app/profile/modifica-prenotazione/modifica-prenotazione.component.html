@@ -6,8 +6,10 @@
         <input
           type="text"
           pInputText
-          placeholder={{idPrenotazione}}
-          [disabled]="true"
+          formControlName="utente"
+          placeholder="utente"
+          [required]="true"
+          readonly
         />
       </div>
       <div class="input-box">
@@ -34,9 +36,16 @@
           [disabled]="modPrenotazioneForm.invalid"
         />
 
-        <button type="button" class="btn btn-danger" [routerLink]="['/profile/gestisci-prenotazioni']">
-          Annulla
-        </button>
+        @if(!showGestisciPrenotazione){
+          <button type="button" class="btn btn-danger" [routerLink]="['/profile/gestisci-prenotazioni']">
+            Annulla
+          </button>
+        }
+        @else {
+          <button type="button" class="btn btn-danger" (click)="chiudiGestisciPrenotazione()">
+            Annulla
+          </button>
+        }
       </div>
     </form>
   </div>

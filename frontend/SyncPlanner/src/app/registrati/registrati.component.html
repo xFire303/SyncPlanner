@@ -7,17 +7,28 @@
           type="text"
           [required]="true"
           pInputText
-          formControlName="username"
+          formControlName="nome"
           placeholder="Inserisci il tuo nome"
-          (ngModelChange)="registratiForm.get('username')?.markAsTouched()"
+          (ngModelChange)="registratiForm.get('nome')?.markAsTouched()"
         />
-        @if (registratiForm.get('username')?.touched &&
-        registratiForm.get('username')?.hasError('required')) {
-        <p class="text-error">Lo username è richiesto</p>
-        } @else if (registratiForm.get('username')?.hasError('minlength')) {
-        <p class="text-error">Lo username deve avere almeno 5 caratteri</p>
-        } @else if (registratiForm.get('username')?.hasError('maxlength')) {
-        <p class="text-error">Lo username deve avere massimo 20 caratteri</p>
+        @if (registratiForm.get('nome')?.touched &&
+        registratiForm.get('nome')?.hasError('required')) {
+        <p class="text-error">Il nome è richiesto</p>
+        }
+      </div>
+
+      <div class="input-box">
+        <input
+          type="text"
+          [required]="true"
+          pInputText
+          formControlName="cognome"
+          placeholder="Inserisci il tuo cognome"
+          (ngModelChange)="registratiForm.get('cognome')?.markAsTouched()"
+        />
+        @if (registratiForm.get('cognome')?.touched &&
+        registratiForm.get('cognome')?.hasError('required')) {
+        <p class="text-error">Il cognome è richiesto</p>
         }
       </div>
 
@@ -75,7 +86,7 @@
       </div>
       @if (registratiForm.get('terms')?.touched &&
       registratiForm.get('terms')?.hasError('required')) {
-      <p class="text-error">Obbligatorio</p>
+      <p class="text-error-terms">Obbligatorio</p>
       }
       <div class="input-box button">
         <input

@@ -13,8 +13,8 @@ import {
   FormControl,
   FormGroup,
   Validators,
-  AbstractControl,
 } from '@angular/forms';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-add-prenotazione',
@@ -32,18 +32,22 @@ import {
 export class AddPrenotazioneComponent implements OnInit {
   @Input() data: string = '';
   @Output() close = new EventEmitter<void>();
+  @Output() addPrenotazione = new EventEmitter<any>();
 
-  constructor(private prenotazioniService: PrenotazioniService) {}
+  constructor(private prenotazioniService: PrenotazioniService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.addPrenotazioneForm.patchValue({
       data: this.data,
       sede: 'Sedi',
+      utente: this.userService.getUserUsername(),
     });
+
   }
 
   addPrenotazioneForm = new FormGroup({
     data: new FormControl('', [Validators.required]),
+    utente: new FormControl('', [Validators.required]),
     sede: new FormControl('', [Validators.required]),
   });
 
@@ -51,8 +55,10 @@ export class AddPrenotazioneComponent implements OnInit {
     if (this.addPrenotazioneForm.valid) {
       this.prenotazioniService
         .createPrenotazione(this.addPrenotazioneForm.value)
-        .subscribe();
-      this.close.emit();
+        .subscribe((prenotazione) => {
+          this.addPrenotazione.emit(prenotazione);
+          this.close.emit();
+        });
     }
   }
 

@@ -1,3 +1,6 @@
+@import "bootstrap/dist/css/bootstrap.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
 .overlay {
   position: fixed;
   top: 0;
@@ -11,27 +14,13 @@
   z-index: 1000;
 }
 
+.calendar-container {
+  padding: 2rem;
+}
+
 .modal-content {
   background: white;
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   width: 40%;
-}
-
-.user h1 {
-  position: relative;
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
-}
-
-.user h1::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 3px;
-  width: 28px;
-  border-radius: 12px;
-  background: #ff8a00;
 }
