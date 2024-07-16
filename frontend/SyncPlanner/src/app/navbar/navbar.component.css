@@ -1,0 +1,40 @@
+nav.navbar {
+  height: 70px; /* Altezza della navbar */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000; /* Metti la navbar sopra gli altri elementi */
+}
+
+img {
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+}
+
+.text-custom {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.divider {
+    width: 100%;
+    /* Imposta la larghezza della linea */
+    border: none;
+    border-top: 1px solid #000;
+    /* Imposta lo stile della linea */
+    margin: 10px 0;
+    /* Imposta il margine sopra e sotto la linea */
+}
+
+i {
+    font-size: 1.5rem;
+    transition: transform 0.1s ease-out;
+    color: #163C70;
+}
+
+i:hover {
+    transform: translateY(4px);
+}

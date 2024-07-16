@@ -1,0 +1,40 @@
+<div class="form-container">
+  <div class="wrapper">
+    <h2>Aggiungi Prenotazione</h2>
+    <button class="close-button" (click)="chiudi()">
+      <i class="fas fa-times"></i>
+    </button>
+    <form [formGroup]="addPrenotazioneForm" (ngSubmit)="submitForm()">
+      <div class="input-box">
+        <input
+          type="text"
+          formControlName="data"
+          placeholder="data prenotazione"
+          pInputText
+          required
+        />
+      </div>
+      <div class="input-box">
+        <select
+          class="form-select"
+          formControlName="sede"
+          required
+        >
+          <option selected>Sedi</option>
+          <option value="Verona">Verona</option>
+          <option value="Milano">Milano</option>
+          <option value="Padova">Padova</option>
+          <option value="Napoli">Napoli</option>
+          <option value="Como">Como</option>
+        </select>
+      </div>
+      <div class="input-box button">
+        <input
+          type="submit"
+          value="Aggiungi prenotazione"
+          [disabled]="addPrenotazioneForm.invalid"
+        />
+      </div>
+    </form>
+  </div>
+</div>

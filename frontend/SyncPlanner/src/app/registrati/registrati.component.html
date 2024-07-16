@@ -1,0 +1,94 @@
+<div class="form-container">
+  <div class="wrapper">
+    <h2>Registrazione</h2>
+    <form [formGroup]="registratiForm" (ngSubmit)="submitForm()">
+      <div class="input-box">
+        <input
+          type="text"
+          [required]="true"
+          pInputText
+          formControlName="username"
+          placeholder="Inserisci il tuo nome"
+          (ngModelChange)="registratiForm.get('username')?.markAsTouched()"
+        />
+        @if (registratiForm.get('username')?.touched &&
+        registratiForm.get('username')?.hasError('required')) {
+        <p class="text-error">Lo username è richiesto</p>
+        } @else if (registratiForm.get('username')?.hasError('minlength')) {
+        <p class="text-error">Lo username deve avere almeno 5 caratteri</p>
+        } @else if (registratiForm.get('username')?.hasError('maxlength')) {
+        <p class="text-error">Lo username deve avere massimo 20 caratteri</p>
+        }
+      </div>
+
+      <div class="input-box">
+        <input
+          type="text"
+          [required]="true"
+          pInputText
+          formControlName="email"
+          placeholder="Inserisci la tua email"
+          (ngModelChange)="registratiForm.get('email')?.markAsTouched()"
+        />
+        @if (registratiForm.get('email')?.touched &&
+        registratiForm.get('email')?.hasError('required')) {
+        <p class="text-error">L'email è richiesta</p>
+        } @else if (registratiForm.get('email')?.hasError('email')) {
+        <p class="text-error">L'email non è valida</p>
+        }
+      </div>
+
+      <div class="input-box">
+        <input
+          type="password"
+          [required]="true"
+          pInputText
+          formControlName="password"
+          placeholder="Crea una password"
+          (ngModelChange)="registratiForm.get('password')?.markAsTouched()"
+        />
+        @if (registratiForm.get('password')?.touched &&
+        registratiForm.get('password')?.hasError('required')) {
+        <p class="text-error">La password è richiesta</p>
+        } @else if (registratiForm.get('password')?.hasError('minlength')) {
+        <p class="text-error">La password deve avere almeno 8 caratteri</p>
+        } @else if (registratiForm.get('password')?.hasError('pattern')) {
+        <p class="text-error">La password non è sicura!</p>
+        }
+      </div>
+      <div class="input-box">
+        <input
+          type="password"
+          [required]="true"
+          pInputText
+          formControlName="confermaPassword"
+          placeholder="Conferma la password"
+        />
+        @if
+        (registratiForm.get('confermaPassword')?.hasError('passwordMismatch')) {
+        <p class="text-error">Le password non corrispondono</p>
+        }
+      </div>
+      <div class="policy">
+        <input type="checkbox" [required]="true" formControlName="terms" />
+        <h3>Accetto tutti i termini & condizioni</h3>
+      </div>
+      @if (registratiForm.get('terms')?.touched &&
+      registratiForm.get('terms')?.hasError('required')) {
+      <p class="text-error">Obbligatorio</p>
+      }
+      <div class="input-box button">
+        <input
+          type="Submit"
+          value="Registrati"
+          [disabled]="registratiForm.invalid"
+        />
+      </div>
+      <div class="text">
+        <h3>
+          Hai già un account? <a [routerLink]="['/accedi']">Accedi ora</a>
+        </h3>
+      </div>
+    </form>
+  </div>
+</div>
