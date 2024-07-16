@@ -24,7 +24,10 @@ import { UserService } from '../user.service';
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent implements OnInit {
-  constructor(private userService: UserService) {}
+  username: string = '';
+  constructor(private userService: UserService) {
+    this.username = this.userService.getUserUsername();
+  }
 
   ngOnInit() {}
 

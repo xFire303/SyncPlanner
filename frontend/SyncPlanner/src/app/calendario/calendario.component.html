@@ -1,17 +1,28 @@
 <div class="calendar-container">
-  <div class="user">
-    <h1>Benvenuto {{ username }}</h1>
-  </div>
   <full-calendar [options]="calendarOptions"></full-calendar>
 </div>
 
 @if(showAddPrenotazione){
-    <div class="overlay">
-      <div class="modal-content">
-        <app-add-prenotazione
-          [data]="selectedDate"
-          (close)="chiudiPrenotazione()"
-        ></app-add-prenotazione>
-      </div>
-    </div>
+<div class="overlay">
+  <div class="modal-content">
+    <app-add-prenotazione
+      [data]="selectedDate"
+      (close)="chiudiPrenotazione()"
+      (addPrenotazione)="onPrenotazioneAggiunta($event)"
+    ></app-add-prenotazione>
+  </div>
+</div>
+} @if(showGestisciPrenotazione){
+<div class="overlay">
+  <div class="modal-content">
+    <app-modifica-prenotazione
+      [data]="selectedDate"
+      [utente]="selectedUtente"
+      [sede]="selectedSede"
+      [showGestisciPrenotazione]="showGestisciPrenotazione"
+      (close)="chiudiGestisciPrenotazione()"
+      (closeGestisciPrenotazione)="chiudiGestisciPrenotazione()"
+    ></app-modifica-prenotazione>
+  </div>
+</div>
 }

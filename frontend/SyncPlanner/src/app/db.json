@@ -2,26 +2,31 @@
   "users": [
     {
       "id": "0",
-      "username": "example_user",
+      "nome": "Mario",
+      "cognome": "Rossi",
       "email": "user@example.com",
       "password": "Pallina303!"
     },
     {
-      "id": "3a07",
-      "username": "marco",
+      "id": "1",
+      "nome": "marco",
+      "cognome": "bosco",
+      "username": "marcoB",
       "email": "marco@gmail.com",
-      "password": "U2FsdGVkX19E3x4mdFayV4aipNN1OdQGTYs1uok4i90="
+      "password": "U2FsdGVkX1/KFTJWFZuoQU4mbtnQgteX2lwI7YzUXvs="
     }
   ],
   "prenotazioni": [
     {
       "id": "0",
+      "utente": "marcoB",
       "data": "2024-07-12",
       "sede": "Milano"
     },
     {
-      "id": "30e3",
+      "id": "1",
       "data": "2024-07-16",
+      "utente": "marcoB",
       "sede": "Verona"
     }
   ]

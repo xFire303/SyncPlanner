@@ -12,10 +12,10 @@ h3 {
 
 .wrapper {
     position: relative;
-    max-width: 430px;
+    max-width: 630px;
     width: 100%;
     background: #fff;
-    padding: 34px;
+    padding: 18px;
     border-radius: 6px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
@@ -109,6 +109,12 @@ form .text h3 a:hover {
     color: red;
     font-size: 0.9rem;
     margin-top: 6px;
+    font-weight: 600;
+}
+
+.text-error-terms {
+    color: red;
+    font-size: 0.9rem;
     font-weight: 600;
 }
 

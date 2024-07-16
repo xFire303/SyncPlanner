@@ -43,10 +43,11 @@ export class RegistratiComponent {
 
   registratiForm = new FormGroup(
     {
-      username: new FormControl<string>('', [
+      nome: new FormControl<string>('', [
         Validators.required,
-        Validators.minLength(5),
-        Validators.maxLength(20),
+      ]),
+      cognome: new FormControl<string>('', [
+        Validators.required,
       ]),
       email: new FormControl<string>('', [
         Validators.required,
