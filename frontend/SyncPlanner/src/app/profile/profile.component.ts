@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { RouterOutlet, RouterModule } from '@angular/router';
 
-import { UserService } from '../user.service';
+import { UserService } from '../services/user.service';
 import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({

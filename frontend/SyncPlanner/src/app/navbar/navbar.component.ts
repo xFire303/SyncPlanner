@@ -8,7 +8,7 @@ import { RouterOutlet, RouterModule } from '@angular/router';
 
 import { NotificheComponent } from '../notifiche/notifiche.component';
 
-import { UserService } from '../user.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-navbar',

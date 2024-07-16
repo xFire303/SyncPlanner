@@ -8,7 +8,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { PrenotazioniService } from '../prenotazioni.service';
+import { PrenotazioniService } from '../../services/prenotazioni.service';
 
 import {
   ReactiveFormsModule,

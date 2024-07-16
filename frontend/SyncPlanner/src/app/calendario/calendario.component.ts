@@ -10,8 +10,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { AddPrenotazioneComponent } from '../add-prenotazione/add-prenotazione.component';
 import { ModificaPrenotazioneComponent } from '../profile/modifica-prenotazione/modifica-prenotazione.component';
 
-import { UserService } from '../user.service';
-import { PrenotazioniService } from '../profile/prenotazioni.service';
+import { UserService } from '../services/user.service';
+import { PrenotazioniService } from '../services/prenotazioni.service';
 
 @Component({
   selector: 'app-calendario',
