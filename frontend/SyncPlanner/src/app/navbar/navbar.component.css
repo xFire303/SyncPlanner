@@ -1,13 +1,13 @@
 nav.navbar {
-  height: 70px; /* Altezza della navbar */
-  position: fixed;
+  height: 60px;
   top: 0;
   width: 100%;
-  z-index: 1000; /* Metti la navbar sopra gli altri elementi */
+  z-index: 1000;
 }
 
 img {
     cursor: pointer;
+    height: 100%;
 }
 
 a {
