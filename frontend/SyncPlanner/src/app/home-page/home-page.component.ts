@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
 
-import { UserService } from '../user.service';
+import { UserService } from '../services/user.service';
 import { CalendarioComponent } from "../calendario/calendario.component";
 
 @Component({

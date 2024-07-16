@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, timer, BehaviorSubject, throwError } from 'rxjs';
 import { map, takeUntil, switchMap, catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { environment } from './environments/environment';
+import { environment } from '../environments/environment';
 import * as CryptoJS from 'crypto-js';
 
 @Injectable({

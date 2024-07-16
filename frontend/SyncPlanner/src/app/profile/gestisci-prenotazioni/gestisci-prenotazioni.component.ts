@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { RouterOutlet, RouterModule } from '@angular/router';
 
-import { PrenotazioniService } from '../prenotazioni.service';
+import { PrenotazioniService } from '../../services/prenotazioni.service';
 
 @Component({
   selector: 'app-gestisci-prenotazioni',
