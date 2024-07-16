@@ -1,0 +1,43 @@
+<div class="form-container">
+  <div class="wrapper">
+    <h2>Modifica Prenotazione</h2>
+    <form [formGroup]="modPrenotazioneForm" (ngSubmit)="submitForm()">
+      <div class="input-box">
+        <input
+          type="text"
+          pInputText
+          placeholder={{idPrenotazione}}
+          [disabled]="true"
+        />
+      </div>
+      <div class="input-box">
+        <input
+          type="date"
+          [required]="true"
+          pInputText
+          formControlName="data-prenotazione"
+          placeholder="Data prenotazione"
+          (ngModelChange)="
+            modPrenotazioneForm.get('data-prenotazione')?.markAsTouched()
+          "
+        />
+      </div>
+      <div class="input-box">
+        <input type="text" pInputText placeholder="Sede" formControlName="sede" readonly />
+      </div>
+
+      <div class="buttons">
+        <input
+          type="Submit"
+          class="btn btn-success"
+          value="Salva modifiche"
+          [disabled]="modPrenotazioneForm.invalid"
+        />
+
+        <button type="button" class="btn btn-danger" [routerLink]="['/profile/gestisci-prenotazioni']">
+          Annulla
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

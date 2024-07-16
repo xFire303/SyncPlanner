@@ -1,0 +1,14 @@
+<div class="calendar-container">
+  <full-calendar [options]="calendarOptions"></full-calendar>
+</div>
+
+@if(showAddPrenotazione){
+    <div class="overlay">
+      <div class="modal-content">
+        <app-add-prenotazione
+          [data]="selectedDate"
+          (close)="chiudiPrenotazione()"
+        ></app-add-prenotazione>
+      </div>
+    </div>
+}

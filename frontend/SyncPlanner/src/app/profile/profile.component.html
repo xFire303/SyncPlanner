@@ -1,0 +1,21 @@
+<app-navbar />
+<div class="container">
+  <div class="sidebar">
+    <h2>Impostazioni</h2>
+    <div class="sidebar-buttons">
+      <button [routerLink]="['/profile/gestisci-profilo']" class="btn">Modifica profilo</button>
+    </div>
+    <div class="sidebar-buttons">
+      <button [routerLink]="['/profile/gestisci-prenotazioni']" class="btn">Gestisci prenotazioni</button>
+    </div>
+    <div class="sidebar-buttons">
+      <button class="btn">Tema dark</button>
+    </div>
+    <div class="sidebar-buttons">
+      <button (click)="logout()" class="btn">Logout</button>
+    </div>
+  </div>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
