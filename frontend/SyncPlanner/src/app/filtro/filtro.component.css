@@ -43,20 +43,6 @@
   cursor: pointer;
 }
 
-.color-legend {
-  display: flex;
-  align-items: center;
-  margin-top: 20px;
-  font-weight: 600;
-}
-
-.color-box {
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
-  margin-right: 10px;
-}
-
 @media screen and (max-width: 768px) {
   .wrapper {
     width: 100%;

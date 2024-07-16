@@ -20,9 +20,24 @@
       [utente]="selectedUtente"
       [sede]="selectedSede"
       [showGestisciPrenotazione]="showGestisciPrenotazione"
-      (close)="chiudiGestisciPrenotazione()"
       (closeGestisciPrenotazione)="chiudiGestisciPrenotazione()"
     ></app-modifica-prenotazione>
+  </div>
+</div>
+}@if(showLeggenda){
+<div class="overlay">
+  <div class="modal-content">
+    <app-leggenda-calendario
+      (closeLeggenda)="chiudiLeggenda()"
+    ></app-leggenda-calendario>
+  </div>
+</div>
+}@if(showFiltro){
+<div class="overlay">
+  <div class="modal-content">
+    <app-filtro
+      (closeFiltro)="chiudiFiltro()"
+    ></app-filtro>
   </div>
 </div>
 }
