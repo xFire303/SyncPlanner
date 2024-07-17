@@ -18,6 +18,10 @@
         {
           "sede_nome": "Verona",
           "ruolo_nome": "amministratore"
+        },
+        {
+          "sede_nome": "Milano",
+          "ruolo_nome": "amministratore"
         }
       ]
     }

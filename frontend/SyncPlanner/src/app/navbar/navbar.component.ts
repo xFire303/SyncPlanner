@@ -25,11 +25,14 @@ import { UserService } from '../services/user.service';
 })
 export class NavbarComponent implements OnInit {
   username: string = '';
-  constructor(private userService: UserService) {
-    this.username = this.userService.getUserUsername();
-  }
 
-  ngOnInit() {}
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.getCurrentUserData().subscribe((user) => {
+      this.username = user.username;
+    });
+  }
 
   showNotifications = false;
 

@@ -10,11 +10,11 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { AddPrenotazioneComponent } from '../add-prenotazione/add-prenotazione.component';
 import { ModificaPrenotazioneComponent } from '../profile/modifica-prenotazione/modifica-prenotazione.component';
 
-import { UserService } from '../services/user.service';
 import { PrenotazioniService } from '../services/prenotazioni.service';
 import { LeggendaCalendarioComponent } from '../leggenda-calendario/leggenda-calendario.component';
 import { FiltroComponent } from '../filtro/filtro.component';
 import { FiltroService } from '../services/filtro.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-calendario',
@@ -35,15 +35,27 @@ export class CalendarioComponent implements OnInit {
   prenotazioniList: any[] = [];
   filteredPrenotazioniList: any[] = [];
 
+  currentUser: any;
+  sediUtente: string[] = [];
+
   constructor(
     private prenotazioniService: PrenotazioniService,
-    private filtroService: FiltroService
+    private filtroService: FiltroService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
-    this.prenotazioniService.getAllPrenotazioni().subscribe((prenotazioni) => {
-      this.prenotazioniList = prenotazioni;
-      this.updateCalendarEvents();
+    this.userService.getCurrentUserData().subscribe((user) => {
+      this.currentUser = user;
+      this.sediUtente = user.ruoli_sede.map((ruolo: any) => ruolo.sede_nome);
+
+      this.prenotazioniService.getAllPrenotazioni().subscribe((prenotazioni) => {
+        this.prenotazioniList = prenotazioni.filter((prenotazione) =>
+          this.sediUtente.includes(prenotazione.sede)
+        );
+        this.filteredPrenotazioniList = this.prenotazioniList;
+        this.updateCalendarEvents();
+      });
     });
 
     this.filtroService.filtroOptions$.subscribe((filterOptions) => {

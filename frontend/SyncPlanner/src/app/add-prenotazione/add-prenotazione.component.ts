@@ -13,8 +13,6 @@ import {
   FormControl,
   FormGroup,
   Validators,
-  ValidatorFn,
-  AbstractControl,
 } from '@angular/forms';
 import { UserService } from '../services/user.service';
 
@@ -36,16 +34,22 @@ export class AddPrenotazioneComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() addPrenotazione = new EventEmitter<any>();
 
+  private currentUser: any;
+
   constructor(
     private prenotazioniService: PrenotazioniService,
     private userService: UserService
   ) {}
 
   ngOnInit(): void {
+    this.userService.getCurrentUserData().subscribe((user) => {
+      this.currentUser = user.username;
+    })
+
     this.addPrenotazioneForm.patchValue({
       data: this.data,
       sede: 'Sedi',
-      utente: this.userService.getUserUsername(),
+      utente: this.currentUser
     });
   }
 

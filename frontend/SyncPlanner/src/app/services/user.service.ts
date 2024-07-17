@@ -12,13 +12,11 @@ import * as CryptoJS from 'crypto-js';
 export class UserService {
   private logoutTimer$ = new Subject<void>();
   private localStorageKey = 'is_authenticated';
-  private currentUserSubject: BehaviorSubject<any>;
-  public currentUser: Observable<any>;
 
-  constructor(private http: HttpClient, private router: Router) {
-    this.currentUserSubject = new BehaviorSubject<any>(null);
-    this.currentUser = this.currentUserSubject.asObservable();
-  }
+  private currentUserSubject = new BehaviorSubject<any>(null);
+  currentUser = this.currentUserSubject.asObservable();
+
+  constructor(private http: HttpClient, private router: Router) {}
 
   encryptPassword(password: string): string {
     const key = environment.encryptionKey;
@@ -68,9 +66,9 @@ export class UserService {
             throw new Error('La password inserita è sbagliata');
           }
           localStorage.setItem(this.localStorageKey, 'true');
-          this.setUserData(user.username, user.email);
-          this.startLogoutTimer();
+          localStorage.setItem('idUtente', user.id.toString());
           this.currentUserSubject.next(user);
+          this.startLogoutTimer();
           return user;
         }),
         tap(() => this.navigateTo('/home')),
@@ -78,21 +76,8 @@ export class UserService {
       );
   }
 
-  setUserData(username: string, email: string) {
-    localStorage.setItem('username', username);
-    localStorage.setItem('email', email);
-  }
-
-  getUserUsername(): string {
-    return localStorage.getItem('username') || '';
-  }
-
-  getUserEmail(): string {
-    return localStorage.getItem('email') || '';
-  }
-
-  getCurrentUser(): Observable<any> {
-    return this.currentUser;
+  getCurrentUserData(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`);
   }
 
   isLoggedIn(): boolean {
