@@ -13,6 +13,8 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  ValidatorFn,
+  AbstractControl,
 } from '@angular/forms';
 import { UserService } from '../services/user.service';
 
@@ -34,7 +36,10 @@ export class AddPrenotazioneComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() addPrenotazione = new EventEmitter<any>();
 
-  constructor(private prenotazioniService: PrenotazioniService, private userService: UserService) {}
+  constructor(
+    private prenotazioniService: PrenotazioniService,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
     this.addPrenotazioneForm.patchValue({
@@ -42,7 +47,6 @@ export class AddPrenotazioneComponent implements OnInit {
       sede: 'Sedi',
       utente: this.userService.getUserUsername(),
     });
-
   }
 
   addPrenotazioneForm = new FormGroup({
@@ -51,8 +55,12 @@ export class AddPrenotazioneComponent implements OnInit {
     sede: new FormControl('', [Validators.required]),
   });
 
+  isDefaultSedeSelected(): boolean {
+    return this.addPrenotazioneForm.get('sede')?.value === 'Sedi';
+  }
+
   submitForm() {
-    if (this.addPrenotazioneForm.valid) {
+    if (this.addPrenotazioneForm.valid && !this.isDefaultSedeSelected()) {
       this.prenotazioniService
         .createPrenotazione(this.addPrenotazioneForm.value)
         .subscribe((prenotazione) => {
