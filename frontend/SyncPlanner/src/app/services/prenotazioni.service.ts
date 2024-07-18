@@ -26,7 +26,7 @@ export class PrenotazioniService {
     return this.http.put<any>(`${environment.apiUrl}/prenotazioni/${prenotazione.id}`, prenotazione);
   }
 
-  deletePrenotazione(prenotazione: any): Observable<any> {
-    return this.http.delete<any>(`${environment.apiUrl}/prenotazioni/${prenotazione.id}`);
+  deletePrenotazione(prenotazioneId: number): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrl}/prenotazioni/${prenotazioneId}`);
   }
 }

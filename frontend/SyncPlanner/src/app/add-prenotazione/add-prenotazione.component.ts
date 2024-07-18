@@ -35,6 +35,7 @@ export class AddPrenotazioneComponent implements OnInit {
   @Output() addPrenotazione = new EventEmitter<any>();
 
   private currentUser: any;
+  currentSedi: any[] = [];
 
   constructor(
     private prenotazioniService: PrenotazioniService,
@@ -44,12 +45,14 @@ export class AddPrenotazioneComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getCurrentUserData().subscribe((user) => {
       this.currentUser = user.username;
-    })
 
-    this.addPrenotazioneForm.patchValue({
-      data: this.data,
-      sede: 'Sedi',
-      utente: this.currentUser
+      this.addPrenotazioneForm.patchValue({
+        data: this.data,
+        sede: 'Sedi',
+        utente: this.currentUser,
+      });
+
+      this.currentSedi = user.ruoli_sede.map((ruolo: any) => ruolo.sede_nome);
     });
   }
 

@@ -21,4 +21,14 @@ export class GestisciPrenotazioniComponent implements OnInit {
       this.prenotazioni = prenotazioni;
     });
   }
+
+  elimina(id: number) {
+    this.prenotazioniService.deletePrenotazione(id).subscribe(() => {
+      this.prenotazioniService
+        .getAllPrenotazioni()
+        .subscribe((prenotazioni) => {
+          this.prenotazioni = prenotazioni;
+        });
+    });
+  }
 }

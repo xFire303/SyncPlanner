@@ -71,7 +71,7 @@
 
 .user-roles {
   display: flex;
-  flex-wrap: wrap;
+  text-align: center;
   gap: 5px;
 }
 

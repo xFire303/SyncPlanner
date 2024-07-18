@@ -28,11 +28,22 @@ export class GestisciUtentiComponent implements OnInit {
 
       if (this.currentUser && this.currentUser.ruoli_sede) {
         const adminLocations = this.currentUser.ruoli_sede
-          .filter((ruoloSede: any) => ruoloSede.ruolo_nome === 'amministratore')
+          .filter((ruoloSede: any) => ruoloSede.ruolo_nome === 'admin')
           .map((ruoloSede: any) => ruoloSede.sede_nome);
 
         this.gestisciUtentiService.getAllUsers().subscribe((utenti) => {
           this.utenti = utenti;
+
+          // Ordina gli utenti in modo che il primo sia quello corrispondente al currentUser
+          this.utenti.sort((a, b) => {
+            if (a.id === this.currentUser.id) {
+              return -1;
+            } else if (b.id === this.currentUser.id) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
 
           this.filteredUtenti = this.utenti.filter((utente: any) => {
             return utente.ruoli_sede.some((ruoloSede: any) =>

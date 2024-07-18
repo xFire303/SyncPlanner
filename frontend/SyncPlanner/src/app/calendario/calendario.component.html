@@ -2,7 +2,7 @@
   <full-calendar [options]="calendarOptions"></full-calendar>
 </div>
 
-@if(showAddPrenotazione){
+@if(showAddPrenotazione && checkUserRoles()){
 <div class="overlay">
   <div class="modal-content">
     <app-add-prenotazione
@@ -12,10 +12,11 @@
     ></app-add-prenotazione>
   </div>
 </div>
-} @if(showGestisciPrenotazione){
+} @if(showGestisciPrenotazione && checkUserRoles()){
 <div class="overlay">
   <div class="modal-content">
     <app-modifica-prenotazione
+      [id]="selectedId"
       [data]="selectedDate"
       [utente]="selectedUtente"
       [sede]="selectedSede"
@@ -35,9 +36,7 @@
 }@if(showFiltro){
 <div class="overlay">
   <div class="modal-content">
-    <app-filtro
-      (closeFiltro)="chiudiFiltro()"
-    ></app-filtro>
+    <app-filtro (closeFiltro)="chiudiFiltro()"></app-filtro>
   </div>
 </div>
 }
