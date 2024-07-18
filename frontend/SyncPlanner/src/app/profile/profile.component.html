@@ -8,6 +8,11 @@
     <div class="sidebar-buttons">
       <button [routerLink]="['/profile/gestisci-prenotazioni']" class="btn">Gestisci prenotazioni</button>
     </div>
+    @if(checkRuolo('amministratore')){
+      <div class="sidebar-buttons">
+        <button [routerLink]="['/profile/gestisci-utenti']" class="btn">Gestisci utenti</button>
+      </div>
+    }
     <div class="sidebar-buttons">
       <button class="btn">Tema dark</button>
     </div>

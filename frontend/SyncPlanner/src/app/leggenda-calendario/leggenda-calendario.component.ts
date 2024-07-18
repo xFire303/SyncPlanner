@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-leggenda-calendario',
@@ -8,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './leggenda-calendario.component.css'
 })
 export class LeggendaCalendarioComponent {
+  @Output() closeLeggenda = new EventEmitter<void>();
 
+  chiudi() {
+    this.closeLeggenda.emit();
+  }
 }

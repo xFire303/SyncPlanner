@@ -36,13 +36,14 @@
           <option value="Padova">Padova</option>
           <option value="Napoli">Napoli</option>
           <option value="Como">Como</option>
+          <option value="Roma">Roma</option>
         </select>
       </div>
       <div class="input-box button">
         <input
           type="submit"
           value="Aggiungi prenotazione"
-          [disabled]="addPrenotazioneForm.invalid"
+          [disabled]="addPrenotazioneForm.invalid || isDefaultSedeSelected()"
         />
       </div>
     </form>

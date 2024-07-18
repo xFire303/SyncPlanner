@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -26,21 +26,25 @@ import { Router } from '@angular/router';
   templateUrl: './gestisci-profilo.component.html',
   styleUrl: './gestisci-profilo.component.css',
 })
-export class GestisciProfiloComponent {
+export class GestisciProfiloComponent implements OnInit {
   errorMessage = '';
 
   userUsername: string = '';
 
   userEmail: string = '';
 
-  constructor(private userService: UserService, private router: Router) {
-    this.userUsername = this.userService.getUserUsername();
-    this.userEmail = this.userService.getUserEmail();
+  constructor(private userService: UserService, private router: Router) {}
 
-    this.profileForm.patchValue({
-      username: this.userUsername,
-      email: this.userEmail,
+  ngOnInit(): void {
+    this.userService.getCurrentUserData().subscribe((user) => {
+      this.userUsername = user.username;
+      this.userEmail = user.email;
+      this.profileForm.patchValue({
+        username: this.userUsername,
+        email: this.userEmail,
+      });
     });
+
   }
 
   profileForm = new FormGroup(

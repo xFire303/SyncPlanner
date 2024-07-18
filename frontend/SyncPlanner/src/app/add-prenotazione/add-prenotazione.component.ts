@@ -34,15 +34,23 @@ export class AddPrenotazioneComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() addPrenotazione = new EventEmitter<any>();
 
-  constructor(private prenotazioniService: PrenotazioniService, private userService: UserService) {}
+  private currentUser: any;
+
+  constructor(
+    private prenotazioniService: PrenotazioniService,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
+    this.userService.getCurrentUserData().subscribe((user) => {
+      this.currentUser = user.username;
+    })
+
     this.addPrenotazioneForm.patchValue({
       data: this.data,
       sede: 'Sedi',
-      utente: this.userService.getUserUsername(),
+      utente: this.currentUser
     });
-
   }
 
   addPrenotazioneForm = new FormGroup({
@@ -51,8 +59,12 @@ export class AddPrenotazioneComponent implements OnInit {
     sede: new FormControl('', [Validators.required]),
   });
 
+  isDefaultSedeSelected(): boolean {
+    return this.addPrenotazioneForm.get('sede')?.value === 'Sedi';
+  }
+
   submitForm() {
-    if (this.addPrenotazioneForm.valid) {
+    if (this.addPrenotazioneForm.valid && !this.isDefaultSedeSelected()) {
       this.prenotazioniService
         .createPrenotazione(this.addPrenotazioneForm.value)
         .subscribe((prenotazione) => {

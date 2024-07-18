@@ -2,18 +2,38 @@
   "users": [
     {
       "id": "0",
-      "nome": "Mario",
-      "cognome": "Rossi",
-      "email": "user@example.com",
-      "password": "Pallina303!"
-    },
-    {
-      "id": "1",
       "nome": "marco",
       "cognome": "bosco",
       "username": "marcoB",
       "email": "marco@gmail.com",
-      "password": "U2FsdGVkX1/KFTJWFZuoQU4mbtnQgteX2lwI7YzUXvs="
+      "password": "U2FsdGVkX1/KFTJWFZuoQU4mbtnQgteX2lwI7YzUXvs=",
+      "ruoli_sede": [
+        {
+          "id": "0",
+          "sede_nome": "Verona",
+          "ruolo_nome": "amministratore"
+        },
+        {
+          "id": "1",
+          "sede_nome": "Milano",
+          "ruolo_nome": "amministratore"
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "nome": "stefano",
+      "cognome": "fiore",
+      "username": "stefanoF",
+      "email": "stefano@gmail.com",
+      "password": "U2FsdGVkX1/KFTJWFZuoQU4mbtnQgteX2lwI7YzUXvs=",
+      "ruoli_sede": [
+        {
+          "id": "0",
+          "sede_nome": "Verona",
+          "ruolo_nome": "user"
+        }
+      ]
     }
   ],
   "prenotazioni": [

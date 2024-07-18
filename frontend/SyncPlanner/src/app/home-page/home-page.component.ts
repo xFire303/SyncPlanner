@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
 
 import { UserService } from '../services/user.service';
-import { CalendarioComponent } from "../calendario/calendario.component";
+import { CalendarioComponent } from '../calendario/calendario.component';
 
 @Component({
   selector: 'app-home-page',
@@ -12,10 +12,8 @@ import { CalendarioComponent } from "../calendario/calendario.component";
   styleUrl: './home-page.component.css',
   imports: [NavbarComponent, FooterComponent, CalendarioComponent],
 })
-export class HomePageComponent {
-  username = '';
+export class HomePageComponent implements OnInit {
+  constructor(private userService: UserService) {}
 
-  constructor(private userService: UserService) {
-    this.username = this.userService.getUserUsername();
-  }
+  ngOnInit(): void {}
 }

@@ -1,4 +1,4 @@
-.leggenda-container {
+.filtro-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,6 +33,36 @@
   background: #ff8a00;
 }
 
+.form-check {
+  margin-bottom: 20px;
+}
+
+.form-check-input {
+  transform: scale(1.2);
+  accent-color: #ff8a00;
+  border: 1.5px solid #c7bebe;
+  border-radius: 4px;
+}
+
+form .input-box input {
+  height: 100%;
+  width: 100%;
+  outline: none;
+  padding: 0 15px;
+  font-size: 20px;
+  color: #333;
+  font-weight: 600;
+  border: 1.5px solid #c7bebe;
+  border-bottom-width: 2.5px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.input-box input:focus,
+.input-box input:valid {
+  border-color: #ff8a00;
+}
+
 .close-button {
   position: absolute;
   top: 10px;
@@ -43,18 +73,16 @@
   cursor: pointer;
 }
 
-.color-legend {
-  display: flex;
-  align-items: center;
-  margin-top: 20px;
-  font-weight: 600;
+.input-box.button input {
+  color: #fff;
+  letter-spacing: 1px;
+  border: none;
+  background: #ff8a00;
+  cursor: pointer;
 }
 
-.color-box {
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
-  margin-right: 10px;
+.input-box.button input:hover {
+  background: #ec7e00;
 }
 
 @media screen and (max-width: 768px) {
