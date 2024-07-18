@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { RouterOutlet, RouterModule } from '@angular/router';
 
@@ -12,10 +12,30 @@ import { NavbarComponent } from '../navbar/navbar.component';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
+  currentUser: any;
+
   constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.getCurrentUserData().subscribe((user) => {
+      this.currentUser = user;
+    });
+  }
 
   logout() {
     this.userService.logout();
+  }
+
+  checkRuolo(ruolo_nome: string) {
+    if (
+      this.currentUser?.ruoli_sede.some(
+        (ruolo: any) => ruolo.ruolo_nome === ruolo_nome
+      )
+    ) {
+      return true;
+    }
+
+    return false;
   }
 }

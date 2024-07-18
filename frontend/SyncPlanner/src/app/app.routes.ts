@@ -10,6 +10,8 @@ import { GestisciProfiloComponent } from './profile/gestisci-profilo/gestisci-pr
 import { ModificaPrenotazioneComponent } from './profile/modifica-prenotazione/modifica-prenotazione.component';
 import { NotificheComponent } from './notifiche/notifiche.component';
 import { AddPrenotazioneComponent } from './add-prenotazione/add-prenotazione.component';
+import { GestisciUtentiComponent } from './profile/gestisci-utenti/gestisci-utenti.component';
+import { EditUtenteComponent } from './profile/gestisci-utenti/edit-utente/edit-utente.component';
 
 export const routes: Routes = [
   {
@@ -51,6 +53,16 @@ export const routes: Routes = [
         component: ModificaPrenotazioneComponent,
         title: 'Modifica Prenotazione',
       },
+      {
+        path: 'gestisci-utenti',
+        component: GestisciUtentiComponent,
+        title: 'Gestisci Utenti',
+      },
+      {
+        path: 'edit-utente/:id',
+        component: EditUtenteComponent,
+        title: 'Modifica Utente',
+      }
     ],
   },
   {

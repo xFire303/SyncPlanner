@@ -13,9 +13,6 @@ export class UserService {
   private logoutTimer$ = new Subject<void>();
   private localStorageKey = 'is_authenticated';
 
-  private currentUserSubject = new BehaviorSubject<any>(null);
-  currentUser = this.currentUserSubject.asObservable();
-
   constructor(private http: HttpClient, private router: Router) {}
 
   encryptPassword(password: string): string {
@@ -67,7 +64,6 @@ export class UserService {
           }
           localStorage.setItem(this.localStorageKey, 'true');
           localStorage.setItem('idUtente', user.id.toString());
-          this.currentUserSubject.next(user);
           this.startLogoutTimer();
           return user;
         }),
@@ -100,7 +96,6 @@ export class UserService {
     localStorage.removeItem(this.localStorageKey);
     localStorage.removeItem('username');
     localStorage.removeItem('email');
-    this.currentUserSubject.next(null);
     this.navigateTo('/accedi');
   }
 

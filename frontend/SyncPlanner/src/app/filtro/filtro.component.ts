@@ -46,7 +46,11 @@ export class FiltroComponent implements OnInit {
   }
 
   checkSede(sede: string) {
-    if (this.currentUser?.ruoli_sede.some((ruolo: any) => ruolo.sede_nome === sede)) {
+    if (
+      this.currentUser?.ruoli_sede.some(
+        (ruolo: any) => ruolo.sede_nome === sede
+      )
+    ) {
       return true;
     }
 
