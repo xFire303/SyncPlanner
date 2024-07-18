@@ -16,6 +16,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-modifica-prenotazione',
@@ -35,6 +36,7 @@ export class ModificaPrenotazioneComponent {
   idPrenotazione!: number;
 
   @Input() showGestisciPrenotazione!: boolean;
+  @Input() id!: string;
   @Input() data!: string;
   @Input() utente!: string;
   @Input() sede!: string;
@@ -43,7 +45,8 @@ export class ModificaPrenotazioneComponent {
 
   constructor(
     private prenotazioniService: PrenotazioniService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private userService: UserService
   ) {}
   ngOnInit() {
     this.idPrenotazione = this.route.snapshot.params['id'];
@@ -58,10 +61,14 @@ export class ModificaPrenotazioneComponent {
       this.prenotazioniService
         .getAllPrenotazioni()
         .subscribe((prenotazioni) => {
+          const prenotazione = prenotazioni.find(
+            (prenotazione) => prenotazione.id === this.idPrenotazione
+          );
+
           this.modPrenotazioneForm.patchValue({
-            'data-prenotazione': prenotazioni[this.idPrenotazione].data,
-            utente: prenotazioni[this.idPrenotazione].utente,
-            sede: prenotazioni[this.idPrenotazione].sede,
+            'data-prenotazione': prenotazione.data,
+            utente: prenotazione.utente,
+            sede: prenotazione.sede,
           });
         });
     }
@@ -80,5 +87,13 @@ export class ModificaPrenotazioneComponent {
 
   chiudiGestisciPrenotazione() {
     this.closeGestisciPrenotazione.emit();
+  }
+
+  elimina() {
+    this.prenotazioniService
+      .deletePrenotazione(+this.id)
+      .subscribe(() => {
+        this.chiudiGestisciPrenotazione();
+      });
   }
 }

@@ -1,6 +1,16 @@
 <div class="form-container">
   <div class="wrapper">
     <h2>Modifica Prenotazione</h2>
+    @if(showGestisciPrenotazione){
+      <button class="close-button" (click)="chiudiGestisciPrenotazione()">
+        <i class="fas fa-times"></i>
+      </button>
+    }
+    @else{
+      <button class="close-button" [routerLink]="['/profile/gestisci-prenotazioni']">
+        <i class="fas fa-times"></i>
+      </button>
+    }
     <form [formGroup]="modPrenotazioneForm" (ngSubmit)="submitForm()">
       <div class="input-box">
         <input
@@ -37,13 +47,13 @@
         />
 
         @if(!showGestisciPrenotazione){
-          <button type="button" class="btn btn-danger" [routerLink]="['/profile/gestisci-prenotazioni']">
-            Annulla
+          <button type="button" class="btn btn-danger" (click)="elimina()" [routerLink]="['/profile/gestisci-prenotazioni']">
+            Elimina
           </button>
         }
         @else {
-          <button type="button" class="btn btn-danger" (click)="chiudiGestisciPrenotazione()">
-            Annulla
+          <button type="button" class="btn btn-danger" (click)="elimina()">
+            Elimina
           </button>
         }
       </div>

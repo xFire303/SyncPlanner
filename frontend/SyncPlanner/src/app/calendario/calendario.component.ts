@@ -37,6 +37,7 @@ export class CalendarioComponent implements OnInit {
 
   currentUser: any;
   sediUtente: string[] = [];
+  ruoliCurrentUser: any[] = [];
 
   constructor(
     private prenotazioniService: PrenotazioniService,
@@ -49,13 +50,19 @@ export class CalendarioComponent implements OnInit {
       this.currentUser = user;
       this.sediUtente = user.ruoli_sede.map((ruolo: any) => ruolo.sede_nome);
 
-      this.prenotazioniService.getAllPrenotazioni().subscribe((prenotazioni) => {
-        this.prenotazioniList = prenotazioni.filter((prenotazione) =>
-          this.sediUtente.includes(prenotazione.sede)
-        );
-        this.filteredPrenotazioniList = this.prenotazioniList;
-        this.updateCalendarEvents();
-      });
+      this.ruoliCurrentUser = user.ruoli_sede.map(
+        (ruoloSede: any) => ruoloSede.ruolo_nome
+      );
+
+      this.prenotazioniService
+        .getAllPrenotazioni()
+        .subscribe((prenotazioni) => {
+          this.prenotazioniList = prenotazioni.filter((prenotazione) =>
+            this.sediUtente.includes(prenotazione.sede)
+          );
+          this.filteredPrenotazioniList = this.prenotazioniList;
+          this.updateCalendarEvents();
+        });
     });
 
     this.filtroService.filtroOptions$.subscribe((filterOptions) => {
@@ -67,6 +74,7 @@ export class CalendarioComponent implements OnInit {
   showGestisciPrenotazione: boolean = false;
   showFiltro: boolean = false;
   showLeggenda: boolean = false;
+  selectedId: string = '';
   selectedDate: string = '';
   selectedUtente: string = '';
   selectedSede: string = '';
@@ -93,12 +101,27 @@ export class CalendarioComponent implements OnInit {
     },
   };
 
+  checkUserRoles(): boolean {
+    return this.ruoliCurrentUser?.includes('admin') || this.ruoliCurrentUser?.includes('keyOwner');
+  }
+
+  refreshPrenotazioni() {
+    this.prenotazioniService.getAllPrenotazioni().subscribe((prenotazioni) => {
+      this.prenotazioniList = prenotazioni.filter((prenotazione) =>
+        this.sediUtente.includes(prenotazione.sede)
+      );
+      this.filteredPrenotazioniList = this.prenotazioniList;
+      this.updateCalendarEvents();
+    });
+  }
+
   apriPrenotazione(arg: any) {
     this.selectedDate = arg.dateStr;
     this.showAddPrenotazione = true;
   }
 
   apriGestisciPrenotazione(arg: any) {
+    this.selectedId = arg.event.id;
     this.selectedDate = arg.event.startStr;
     this.selectedUtente = arg.event.title;
     this.selectedSede = arg.event.extendedProps.sede;
@@ -115,6 +138,7 @@ export class CalendarioComponent implements OnInit {
 
   chiudiGestisciPrenotazione() {
     this.showGestisciPrenotazione = false;
+    this.refreshPrenotazioni();
   }
 
   chiudiLeggenda() {

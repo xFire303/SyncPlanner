@@ -31,12 +31,9 @@
           required
         >
           <option selected>Sedi</option>
-          <option value="Verona">Verona</option>
-          <option value="Milano">Milano</option>
-          <option value="Padova">Padova</option>
-          <option value="Napoli">Napoli</option>
-          <option value="Como">Como</option>
-          <option value="Roma">Roma</option>
+          @for(sede of currentSedi; track sede){
+          <option value="{{sede}}">{{sede}}</option>
+          }
         </select>
       </div>
       <div class="input-box button">
