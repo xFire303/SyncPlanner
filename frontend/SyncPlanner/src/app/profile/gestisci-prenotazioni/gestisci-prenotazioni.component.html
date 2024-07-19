@@ -9,7 +9,7 @@
       <div class="detail"><strong>Sede: </strong>{{prenotazione.sede}}</div>
       <div class="buttons">
         <button
-          [routerLink]="['/profile/modifica-prenotazione', prenotazione.id]"
+          (click)="modificaPrenotazione(prenotazione.id)"
           class="btn btn-primary"
         >
           Modifica

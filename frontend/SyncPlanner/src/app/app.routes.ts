@@ -8,20 +8,22 @@ import { ProfileComponent } from './profile/profile.component';
 import { GestisciPrenotazioniComponent } from './profile/gestisci-prenotazioni/gestisci-prenotazioni.component';
 import { GestisciProfiloComponent } from './profile/gestisci-profilo/gestisci-profilo.component';
 import { ModificaPrenotazioneComponent } from './profile/modifica-prenotazione/modifica-prenotazione.component';
-import { NotificheComponent } from './notifiche/notifiche.component';
 import { AddPrenotazioneComponent } from './add-prenotazione/add-prenotazione.component';
 import { GestisciUtentiComponent } from './profile/gestisci-utenti/gestisci-utenti.component';
 import { EditUtenteComponent } from './profile/gestisci-utenti/edit-utente/edit-utente.component';
+import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     component: WelcomeComponent,
+    canActivate: [AuthGuard],
     title: 'Benvenuto',
   },
   {
     path: 'home',
     component: HomePageComponent,
+    canActivate: [AuthGuard],
     title: 'SycnPlanner',
   },
   {
@@ -37,37 +39,44 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'gestisci-profilo',
         component: GestisciProfiloComponent,
+        canActivate: [AuthGuard],
         title: 'Gestisci Profilo',
       },
       {
         path: 'gestisci-prenotazioni',
         component: GestisciPrenotazioniComponent,
+        canActivate: [AuthGuard],
         title: 'Gestisci Prenotazioni',
       },
       {
-        path: 'modifica-prenotazione/:id',
+        path: 'modifica-prenotazione',
         component: ModificaPrenotazioneComponent,
+        canActivate: [AuthGuard],
         title: 'Modifica Prenotazione',
       },
       {
         path: 'gestisci-utenti',
         component: GestisciUtentiComponent,
+        canActivate: [AuthGuard],
         title: 'Gestisci Utenti',
       },
       {
-        path: 'edit-utente/:id',
+        path: 'edit-utente',
         component: EditUtenteComponent,
+        canActivate: [AuthGuard],
         title: 'Modifica Utente',
-      }
+      },
     ],
   },
   {
-    path: 'add-prenotazione/:date',
+    path: 'add-prenotazione',
     component: AddPrenotazioneComponent,
+    canActivate: [AuthGuard],
     title: 'Aggiungi Prenotazione',
-  }
+  },
 ];

@@ -4,12 +4,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
-import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { GestisciUtentiService } from '../../../services/gestisci-utenti.service';
+import { idStateService } from '../../../services/id-state.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-edit-utente',
@@ -19,14 +21,14 @@ import { GestisciUtentiService } from '../../../services/gestisci-utenti.service
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
-    CommonModule,
+    RouterModule,
   ],
   templateUrl: './edit-utente.component.html',
   styleUrl: './edit-utente.component.css',
 })
 export class EditUtenteComponent implements OnInit {
   utenti: any[] = [];
-  idCurrentUser: number = 0;
+  idCurrentUser!: string;
   currentUserUsername: string = '';
 
   roles: string[] = ['guest', 'keyOwner', 'admin'];
@@ -40,15 +42,33 @@ export class EditUtenteComponent implements OnInit {
   ];
 
   constructor(
+    private userService: UserService,
     private gestisciUtentiService: GestisciUtentiService,
-    private route: ActivatedRoute,
-  ) {
-    this.idCurrentUser = this.route.snapshot.params['id'];
-  }
+    private router: Router,
+    private idStateService: idStateService
+  ) {}
 
   editUtenteForm = new FormGroup({});
 
+  utenteLoggato: any;
+  sediAdminUtenteLoggato: string[] = [];
+  sediKeyOwnerUtenteLoggato: string[] = [];
+
   ngOnInit(): void {
+    this.userService.getCurrentUserData().subscribe((data) => {
+      this.utenteLoggato = data;
+
+      this.sediAdminUtenteLoggato = this.utenteLoggato.ruoli_sede
+        .filter((rs: any) => rs.ruolo_nome === 'admin')
+        .map((rs: any) => rs.sede_nome);
+
+      this.sediKeyOwnerUtenteLoggato = this.utenteLoggato.ruoli_sede
+        .filter((rs: any) => rs.ruolo_nome === 'keyOwner')
+        .map((rs: any) => rs.sede_nome);
+    });
+
+    this.idCurrentUser = this.idStateService.getSelectedUtenteId()!;
+
     this.initializeForm();
 
     this.gestisciUtentiService.getAllUsers().subscribe((data) => {
@@ -59,19 +79,39 @@ export class EditUtenteComponent implements OnInit {
       if (currentUser) {
         this.currentUserUsername = currentUser.username;
 
-        this.initializeRoleCheckboxes(currentUser.ruoli_sede);
+        this.initializeRoleCheckboxes(
+          currentUser.ruoli_sede,
+          this.sediAdminUtenteLoggato,
+          this.sediKeyOwnerUtenteLoggato
+        );
       }
     });
   }
 
-  initializeRoleCheckboxes(ruoliSede: any[]) {
+  initializeRoleCheckboxes(
+    ruoliSede: any[],
+    ruoliSedeUtenteLoggato: string[] = [],
+    ruoliSedeKeyOwner: string[] = []
+  ) {
+    const sediAdmin = ruoliSedeUtenteLoggato;
+    const sediKeyOwner = ruoliSedeKeyOwner;
+
     this.roles.forEach((role) => {
       this.locations.forEach((location) => {
         const controlName = `${role}_${location}`;
         const hasRole = ruoliSede.some(
           (rs) => rs.sede_nome === location && rs.ruolo_nome === role
         );
+
         this.editUtenteForm.get(controlName)?.setValue(hasRole);
+
+        if (!sediAdmin.includes(location) && !sediKeyOwner.includes(location)) {
+          this.editUtenteForm.get(controlName)?.disable();
+        }
+
+        if (sediKeyOwner.includes(location) && role !== 'keyOwner') {
+          this.editUtenteForm.get(controlName)?.disable();
+        }
       });
     });
   }
@@ -97,11 +137,16 @@ export class EditUtenteComponent implements OnInit {
     }
 
     this.gestisciUtentiService
-      .updateUserRoles(this.idCurrentUser, updatedRoles)
+      .updateUserRoles(+this.idCurrentUser, updatedRoles)
       .subscribe();
   }
 
   deleteUser() {
-    this.gestisciUtentiService.deleteUser(this.idCurrentUser).subscribe();
+    this.gestisciUtentiService.deleteUser(+this.idCurrentUser).subscribe();
+  }
+
+  chiudi() {
+    this.idStateService.clearSelectedUtenteId();
+    this.router.navigate(['/profile/gestisci-utenti']);
   }
 }
