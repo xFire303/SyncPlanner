@@ -4,6 +4,9 @@ import { GestisciUtentiService } from '../../services/gestisci-utenti.service';
 
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { idStateService } from '../../services/id-state.service';
+
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-gestisci-utenti',
@@ -19,7 +22,9 @@ export class GestisciUtentiComponent implements OnInit {
 
   constructor(
     private gestisciUtentiService: GestisciUtentiService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router,
+    private idStateService: idStateService
   ) {}
 
   ngOnInit(): void {
@@ -53,5 +58,10 @@ export class GestisciUtentiComponent implements OnInit {
         });
       }
     });
+  }
+
+  navigateToEditUtente(id: string): void {
+    this.idStateService.setSelectedUtenteId(id);
+    this.router.navigate(['/profile/edit-utente']);
   }
 }

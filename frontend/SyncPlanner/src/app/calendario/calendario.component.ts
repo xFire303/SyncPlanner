@@ -37,6 +37,7 @@ export class CalendarioComponent implements OnInit {
 
   currentUser: any;
   sediUtente: string[] = [];
+  sediUtenteRoles: string[] = [];
   ruoliCurrentUser: any[] = [];
 
   constructor(
@@ -53,6 +54,10 @@ export class CalendarioComponent implements OnInit {
       this.ruoliCurrentUser = user.ruoli_sede.map(
         (ruoloSede: any) => ruoloSede.ruolo_nome
       );
+
+      this.sediUtenteRoles = user.ruoli_sede
+        .filter((ruolo: any) => ruolo.ruolo_nome === 'admin')
+        .map((ruolo: any) => ruolo.sede_nome);
 
       this.prenotazioniService
         .getAllPrenotazioni()
@@ -101,8 +106,18 @@ export class CalendarioComponent implements OnInit {
     },
   };
 
+  checkSediRoles(sede: string): boolean {
+    if (this.sediUtenteRoles.includes(sede)) {
+      return true;
+    }
+    return false;
+  }
+
   checkUserRoles(): boolean {
-    return this.ruoliCurrentUser?.includes('admin') || this.ruoliCurrentUser?.includes('keyOwner');
+    return (
+      this.ruoliCurrentUser?.includes('admin') ||
+      this.ruoliCurrentUser?.includes('keyOwner')
+    );
   }
 
   refreshPrenotazioni() {
@@ -121,11 +136,13 @@ export class CalendarioComponent implements OnInit {
   }
 
   apriGestisciPrenotazione(arg: any) {
-    this.selectedId = arg.event.id;
-    this.selectedDate = arg.event.startStr;
-    this.selectedUtente = arg.event.title;
-    this.selectedSede = arg.event.extendedProps.sede;
-    this.showGestisciPrenotazione = true;
+    if (this.checkSediRoles(arg.event.extendedProps.sede) || this.currentUser.username === arg.event.title) {
+      this.selectedId = arg.event.id;
+      this.selectedDate = arg.event.startStr;
+      this.selectedUtente = arg.event.title;
+      this.selectedSede = arg.event.extendedProps.sede;
+      this.showGestisciPrenotazione = true;
+    }
   }
 
   apriLeggenda() {
@@ -166,6 +183,7 @@ export class CalendarioComponent implements OnInit {
         start: prenotazione.data,
         extendedProps: { sede: prenotazione.sede },
         color: sedeColorMap[prenotazione.sede],
+        textColor: 'black',
       })
     );
   }

@@ -38,7 +38,7 @@
   display: grid;
   grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
   align-items: center;
-  width: 30%;
+  width: 35%;
   background: #f9f9f9;
   border-radius: 6px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);

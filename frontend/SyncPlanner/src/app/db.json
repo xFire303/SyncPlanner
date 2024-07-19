@@ -11,6 +11,10 @@
         {
           "sede_nome": "Verona",
           "ruolo_nome": "guest"
+        },
+        {
+          "sede_nome": "Padova",
+          "ruolo_nome": "keyOwner"
         }
       ]
     },
@@ -23,22 +27,28 @@
       "password": "U2FsdGVkX1/KFTJWFZuoQU4mbtnQgteX2lwI7YzUXvs=",
       "ruoli_sede": [
         {
-          "sede_nome": "Padova",
-          "ruolo_nome": "guest"
-        },
-        {
           "sede_nome": "Verona",
           "ruolo_nome": "admin"
+        },
+        {
+          "sede_nome": "Padova",
+          "ruolo_nome": "keyOwner"
         }
       ]
     }
   ],
   "prenotazioni": [
     {
-      "id": "2",
+      "id": "3",
+      "data": "2024-07-09",
+      "utente": "marioR",
+      "sede": "Verona"
+    },
+    {
+      "id": "5",
       "data": "2024-07-09",
       "utente": "marcoB",
-      "sede": "Verona"
+      "sede": "Padova"
     }
   ]
 }

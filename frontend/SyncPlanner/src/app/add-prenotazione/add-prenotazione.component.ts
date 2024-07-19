@@ -52,7 +52,12 @@ export class AddPrenotazioneComponent implements OnInit {
         utente: this.currentUser,
       });
 
-      this.currentSedi = user.ruoli_sede.map((ruolo: any) => ruolo.sede_nome);
+      this.currentSedi = user.ruoli_sede
+        .filter(
+          (ruolo: any) =>
+            ruolo.ruolo_nome === 'admin' || ruolo.ruolo_nome === 'keyOwner'
+        )
+        .map((ruolo: any) => ruolo.sede_nome);
     });
   }
 
