@@ -56,10 +56,7 @@ export class CalendarioComponent implements OnInit {
       );
 
       this.sediUtenteRoles = user.ruoli_sede
-        .filter(
-          (ruolo: any) =>
-            ruolo.ruolo_nome === 'admin' || ruolo.ruolo_nome === 'keyOwner'
-        )
+        .filter((ruolo: any) => ruolo.ruolo_nome === 'admin')
         .map((ruolo: any) => ruolo.sede_nome);
 
       this.prenotazioniService
@@ -139,7 +136,7 @@ export class CalendarioComponent implements OnInit {
   }
 
   apriGestisciPrenotazione(arg: any) {
-    if (this.checkSediRoles(arg.event.extendedProps.sede)) {
+    if (this.checkSediRoles(arg.event.extendedProps.sede) || this.currentUser.username === arg.event.title) {
       this.selectedId = arg.event.id;
       this.selectedDate = arg.event.startStr;
       this.selectedUtente = arg.event.title;
