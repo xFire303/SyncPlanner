@@ -46,6 +46,8 @@ export class RegistratiComponent implements OnInit {
 
   showRegistratiForm = true;
 
+  errorMessage: string = '';
+
   sediForm: FormGroup = new FormGroup({});
 
   constructor(private userService: UserService, private fb: FormBuilder) {}
@@ -54,6 +56,10 @@ export class RegistratiComponent implements OnInit {
     this.initializeForm();
     this.sediForm.valueChanges.subscribe(() => {
       this.updateAlmenoUnaSedeSelezionata();
+    });
+
+    this.userService.getErrorMessage$.subscribe((message) => {
+      this.errorMessage = message;
     });
   }
 
@@ -111,9 +117,17 @@ export class RegistratiComponent implements OnInit {
     this.showRegistratiForm = true;
   }
 
-  submitForm() {
+  async submitForm() {
     if (this.registratiForm.valid) {
-      this.showRegistratiForm = false;
+      const emailExists = await this.userService.checkIfEmailAlreadyExists(
+        this.registratiForm.value
+      );
+      if (emailExists) {
+        this.errorMessage = 'Esiste già un utente con questa email';
+        this.showRegistratiForm = true;
+      } else {
+        this.showRegistratiForm = false;
+      }
     }
   }
 
@@ -132,7 +146,6 @@ export class RegistratiComponent implements OnInit {
       this.message = 'Utente creato con successo!';
 
       this.userService.register(userData, selectedSedi).subscribe({});
-
     }
   }
 }
