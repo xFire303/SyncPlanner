@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -29,9 +29,18 @@ import {
     RouterOutlet,
   ],
 })
-export class AccediComponent {
+export class AccediComponent implements OnInit {
+
+  message: string = '';
+  errorMessage: string = '';
 
   constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.getErrorMessage$.subscribe((message) => {
+      this.errorMessage = message;
+    })
+  }
 
   accediForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
@@ -43,7 +52,14 @@ export class AccediComponent {
 
   submitForm() {
     if (this.accediForm.valid) {
+      this.userService.getErrorMessage$.subscribe((message) => {
+        this.errorMessage = message;
+      });
+
       const userData = this.accediForm.value;
+
+      this.message = 'Accesso effettuato con successo';
+
       this.userService
         .login(userData)
         .subscribe({})

@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, timer, throwError } from 'rxjs';
-import { map, takeUntil, switchMap, tap, delay} from 'rxjs/operators';
+import { map, takeUntil, switchMap, tap, delay } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import * as CryptoJS from 'crypto-js';
+
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +14,10 @@ import * as CryptoJS from 'crypto-js';
 export class UserService {
   private logoutTimer$ = new Subject<void>();
   private localStorageKey = 'is_authenticated';
+
+  private errorMessage$ = new Subject<string>();
+
+  getErrorMessage$ = this.errorMessage$.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -34,12 +40,12 @@ export class UserService {
       ruolo_nome: 'guest',
     }));
 
-    const username = userData.nome + userData.cognome[0].toUpperCase();
+    const username = userData.nome.toLowerCase() + userData.cognome[0].toUpperCase();
 
     const userModel = {
       id: userData.id,
-      nome: userData.nome,
-      cognome: userData.cognome,
+      nome: userData.nome.toLowerCase(),
+      cognome: userData.cognome.toLowerCase(),
       username: username,
       email: userData.email,
       password: userData.password,
@@ -54,13 +60,14 @@ export class UserService {
             (user) => user.email === userData.email
           );
           if (emailExists) {
-            return throwError(
-              () => new Error("L'email inserita è già stata usata")
+            return throwError(() =>
+              this.errorMessage$.next("L'email inserita è già stata usata")
             );
           }
-          return this.http
-            .post(`${environment.apiUrl}/users`, userModel)
-            .pipe(delay(1500), tap(() => this.navigateTo('/accedi')));
+          return this.http.post(`${environment.apiUrl}/users`, userModel).pipe(
+            delay(1500),
+            tap(() => this.navigateTo('/accedi'))
+          );
         })
       );
   }
@@ -72,19 +79,32 @@ export class UserService {
         map((users) => {
           const user = users.find((u) => u.email === userData.email);
           if (!user) {
-            throw new Error("L'email inserita è sbagliata");
+            throw this.errorMessage$.next("L'email inserita è sbagliata");
           }
           const decryptedPassword = this.decryptPassword(user.password);
           if (decryptedPassword !== userData.password) {
-            throw new Error('La password inserita è sbagliata');
+            throw this.errorMessage$.next('La password inserita è sbagliata');
           }
           localStorage.setItem(this.localStorageKey, 'true');
           localStorage.setItem('idUtente', user.id.toString());
           this.startLogoutTimer();
           return user;
         }),
-        tap(() => this.navigateTo('/home')),
+        delay(1500),
+        tap(() => this.navigateTo('/home'))
       );
+  }
+
+  checkIfEmailAlreadyExists(userData: any): Promise<boolean> {
+    const users$ = this.http
+      .get<any[]>(`${environment.apiUrl}/users?email=${userData.email}`)
+      .pipe(
+        map((users) => {
+          return users.some((user) => user.email === userData.email);
+        })
+      );
+
+    return lastValueFrom(users$);
   }
 
   getCurrentUserData(): Observable<any> {
@@ -128,7 +148,10 @@ export class UserService {
   changeCredentials(userData: any): Observable<any> {
     userData.password = this.encryptPassword(userData.password);
     return this.http
-      .patch(`${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`, userData)
+      .patch(
+        `${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`,
+        userData
+      )
       .pipe(tap(() => this.navigateTo('/profile/gestisci-profilo')));
   }
 }

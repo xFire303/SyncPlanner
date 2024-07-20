@@ -49,6 +49,9 @@
         } @else if (registratiForm.get('email')?.hasError('email')) {
         <p class="text-error">L'email non è valida</p>
         }
+        @if(errorMessage != ''){
+        <p class="text-error">{{errorMessage}}</p>
+        }
       </div>
 
       <div class="input-box">
