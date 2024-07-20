@@ -16,6 +16,8 @@ import { FiltroComponent } from '../filtro/filtro.component';
 import { FiltroService } from '../services/filtro.service';
 import { UserService } from '../services/user.service';
 
+import itLocale from '@fullcalendar/core/locales/it';
+
 @Component({
   selector: 'app-calendario',
   standalone: true,
@@ -85,6 +87,7 @@ export class CalendarioComponent implements OnInit {
   selectedSede: string = '';
 
   calendarOptions: CalendarOptions = {
+    locale: itLocale,
     headerToolbar: {
       left: 'Leggenda Filtro',
       center: 'title',

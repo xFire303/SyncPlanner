@@ -68,6 +68,9 @@
           [disabled]="profileForm.invalid"
         />
       </div>
+      @if(message != ''){
+      <p class="text-success">{{message}}</p>
+      }
     </form>
   </div>
 </div>

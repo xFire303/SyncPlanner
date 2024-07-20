@@ -1,3 +1,5 @@
+@if(showRegistratiForm){
+
 <div class="form-container">
   <div class="wrapper">
     <h2>Registrazione</h2>
@@ -103,3 +105,49 @@
     </form>
   </div>
 </div>
+} @else {
+<div class="form-container">
+  <div class="wrapper-sedi">
+    @if(!almenoUnaSedeSelezionata) {
+    <h2>Seleziona almeno una sede</h2>
+
+    } @else{
+    <h2>Seleziona le sedi</h2>
+    }
+    <form [formGroup]="sediForm" (ngSubmit)="submitSediForm()">
+      <div class="sedi-container">
+        @for(sede of sedi; track sede){
+        <div class="form-check">
+          <input
+            type="checkbox"
+            [formControlName]="sede"
+            class="form-check-input"
+            id="sede-{{ sede }}"
+          />
+          <label class="form-check-label" for="sede-{{ sede }}">
+            {{ sede }}
+          </label>
+        </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="goBack()">
+          Torna indietro
+        </button>
+
+        <input
+          type="submit"
+          value="Conferma"
+          class="btn btn-primary"
+          [disabled]="!almenoUnaSedeSelezionata"
+        />
+      </div>
+      @if(message != ''){
+      <p class="text-success">{{ message }}</p>
+      }
+    </form>
+  </div>
+</div>
+
+}
