@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
@@ -18,8 +18,8 @@ import {
   FormGroup,
   Validators,
   AbstractControl,
+  FormBuilder,
 } from '@angular/forms';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-registrati',
@@ -37,18 +37,42 @@ import { Observable } from 'rxjs';
     MessagesModule,
   ],
 })
-export class RegistratiComponent {
+export class RegistratiComponent implements OnInit {
+  sedi = ['Verona', 'Padova', 'Milano', 'Roma', 'Napoli', 'Como'];
 
-  constructor(private userService: UserService) {}
+  message: string = '';
+
+  almenoUnaSedeSelezionata = false;
+
+  showRegistratiForm = true;
+
+  sediForm: FormGroup = new FormGroup({});
+
+  constructor(private userService: UserService, private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.initializeForm();
+    this.sediForm.valueChanges.subscribe(() => {
+      this.updateAlmenoUnaSedeSelezionata();
+    });
+  }
+
+  initializeForm() {
+    const formControls = this.sedi.reduce(
+      (controls: { [key: string]: FormControl }, sede: string) => {
+        controls[sede] = new FormControl(false);
+        return controls;
+      },
+      {}
+    );
+
+    this.sediForm = this.fb.group(formControls);
+  }
 
   registratiForm = new FormGroup(
     {
-      nome: new FormControl<string>('', [
-        Validators.required,
-      ]),
-      cognome: new FormControl<string>('', [
-        Validators.required,
-      ]),
+      nome: new FormControl<string>('', [Validators.required]),
+      cognome: new FormControl<string>('', [Validators.required]),
       email: new FormControl<string>('', [
         Validators.required,
         Validators.email,
@@ -66,6 +90,12 @@ export class RegistratiComponent {
     { validators: this.passwordMatchValidator }
   );
 
+  updateAlmenoUnaSedeSelezionata() {
+    this.almenoUnaSedeSelezionata = Object.values(this.sediForm.value).includes(
+      true
+    );
+  }
+
   passwordMatchValidator(control: AbstractControl) {
     const password = control.get('password')?.value;
     const confermaPassword = control.get('confermaPassword')?.value;
@@ -77,13 +107,32 @@ export class RegistratiComponent {
     return null;
   }
 
+  goBack() {
+    this.showRegistratiForm = true;
+  }
+
   submitForm() {
     if (this.registratiForm.valid) {
+      this.showRegistratiForm = false;
+    }
+  }
+
+  submitSediForm() {
+    if (
+      this.sediForm.valid &&
+      this.almenoUnaSedeSelezionata &&
+      this.registratiForm.valid
+    ) {
       const { confermaPassword, terms, ...userData } =
         this.registratiForm.value;
-      this.userService
-        .register(userData)
-        .subscribe({})
+      const selectedSedi = Object.keys(this.sediForm.value).filter(
+        (sede) => this.sediForm.value[sede]
+      );
+
+      this.message = 'Utente creato con successo!';
+
+      this.userService.register(userData, selectedSedi).subscribe({});
+
     }
   }
 }

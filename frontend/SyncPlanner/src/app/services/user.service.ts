@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, timer, BehaviorSubject, throwError } from 'rxjs';
-import { map, takeUntil, switchMap, catchError, tap } from 'rxjs/operators';
+import { Observable, Subject, timer, throwError } from 'rxjs';
+import { map, takeUntil, switchMap, tap, delay} from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import * as CryptoJS from 'crypto-js';
@@ -26,8 +26,25 @@ export class UserService {
     return bytes.toString(CryptoJS.enc.Utf8);
   }
 
-  register(userData: any): Observable<any> {
+  register(userData: any, sediData: any): Observable<any> {
     userData.password = this.encryptPassword(userData.password);
+
+    const ruoliSede = sediData.map((sede: string) => ({
+      sede_nome: sede,
+      ruolo_nome: 'guest',
+    }));
+
+    const username = userData.nome + userData.cognome[0].toUpperCase();
+
+    const userModel = {
+      id: userData.id,
+      nome: userData.nome,
+      cognome: userData.cognome,
+      username: username,
+      email: userData.email,
+      password: userData.password,
+      ruoli_sede: ruoliSede,
+    };
 
     return this.http
       .get<any[]>(`${environment.apiUrl}/users?email=${userData.email}`)
@@ -42,10 +59,9 @@ export class UserService {
             );
           }
           return this.http
-            .post(`${environment.apiUrl}/users`, userData)
-            .pipe(tap(() => this.navigateTo('/accedi')));
-        }),
-        catchError(this.handleError)
+            .post(`${environment.apiUrl}/users`, userModel)
+            .pipe(delay(1500), tap(() => this.navigateTo('/accedi')));
+        })
       );
   }
 
@@ -68,12 +84,13 @@ export class UserService {
           return user;
         }),
         tap(() => this.navigateTo('/home')),
-        catchError(this.handleError)
       );
   }
 
   getCurrentUserData(): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`);
+    return this.http.get<any>(
+      `${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`
+    );
   }
 
   isLoggedIn(): boolean {
@@ -111,7 +128,7 @@ export class UserService {
   changeCredentials(userData: any): Observable<any> {
     userData.password = this.encryptPassword(userData.password);
     return this.http
-      .put(`${environment.apiUrl}/users`, userData)
+      .patch(`${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`, userData)
       .pipe(tap(() => this.navigateTo('/profile/gestisci-profilo')));
   }
 }

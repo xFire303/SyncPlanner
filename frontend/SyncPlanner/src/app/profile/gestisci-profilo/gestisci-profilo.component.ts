@@ -27,7 +27,7 @@ import { Router } from '@angular/router';
   styleUrl: './gestisci-profilo.component.css',
 })
 export class GestisciProfiloComponent implements OnInit {
-  errorMessage = '';
+  message = '';
 
   userUsername: string = '';
 
@@ -85,6 +85,13 @@ export class GestisciProfiloComponent implements OnInit {
     if (this.profileForm.valid) {
       const { confermaPassword, ...userData } = this.profileForm.value;
       this.userService.changeCredentials(userData).subscribe({});
+      this.message = 'Credenziali modificate con successo';
+      this.profileForm.patchValue({
+        password: '',
+        confermaPassword: ''
+      })
+      this.profileForm.get('password')?.markAsUntouched();
+      this.profileForm.get('confermaPassword')?.markAsUntouched();
     }
   }
 }

@@ -107,6 +107,15 @@ form .text h3 a:hover {
   font-weight: 600;
 }
 
+.text-success {
+  color: green;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+}
+
 @media screen and (max-width: 768px) {
   .wrapper {
     width: 100%;
