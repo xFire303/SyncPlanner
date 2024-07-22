@@ -1,0 +1,76 @@
+<div class="form-container">
+  <div class="wrapper">
+    <h2>Gestisci Profilo</h2>
+    <form [formGroup]="profileForm" (ngSubmit)="submitForm()">
+      <div class="input-box">
+        <input
+          type="text"
+          [required]="true"
+          pInputText
+          formControlName="username"
+          (ngModelChange)="profileForm.get('username')?.markAsTouched()"
+        />
+        @if (profileForm.get('username')?.touched &&
+        profileForm.get('username')?.hasError('required')) {
+        <p class="text-error">Lo username è richiesto</p>
+        } @else if (profileForm.get('username')?.hasError('minlength')) {
+        <p class="text-error">Lo username deve avere almeno 5 caratteri</p>
+        } @else if (profileForm.get('username')?.hasError('maxlength')) {
+        <p class="text-error">Lo username deve avere massimo 20 caratteri</p>
+        }
+      </div>
+      <div class="input-box">
+        <input
+          type="text"
+          [required]="true"
+          pInputText
+          formControlName="email"
+          readonly
+        />
+      </div>
+      <div class="input-box">
+        <input
+          type="password"
+          [required]="true"
+          pInputText
+          formControlName="password"
+          placeholder="Inserisci la nuova password"
+          (ngModelChange)="profileForm.get('password')?.markAsTouched()"
+        />
+        @if (profileForm.get('password')?.touched &&
+        profileForm.get('password')?.hasError('required')) {
+        <p class="text-error">La password è richiesta</p>
+        } @else if (profileForm.get('password')?.hasError('minlength')) {
+        <p class="text-error">La password deve avere almeno 8 caratteri</p>
+        } @else if (profileForm.get('password')?.hasError('pattern')) {
+        <p class="text-error">La password non è sicura!</p>
+        }
+      </div>
+      <div class="input-box">
+        <input
+          type="password"
+          [required]="true"
+          pInputText
+          formControlName="confermaPassword"
+          placeholder="Conferma la nuova password"
+          (ngModelChange)="profileForm.get('confermaPassword')?.markAsTouched()"
+        />
+        @if (profileForm.get('confermaPassword')?.hasError('passwordMismatch'))
+        {
+        <p class="text-error">Le password non corrispondono</p>
+        }
+      </div>
+
+      <div class="input-box button">
+        <input
+          type="Submit"
+          value="Salva modifiche"
+          [disabled]="profileForm.invalid"
+        />
+      </div>
+      @if(message != ''){
+      <p class="text-success">{{message}}</p>
+      }
+    </form>
+  </div>
+</div>
