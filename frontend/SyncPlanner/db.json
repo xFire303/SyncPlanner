@@ -1,0 +1,64 @@
+{
+  "users": [
+    {
+      "id": "0",
+      "nome": "marco",
+      "cognome": "bosco",
+      "username": "marcoB",
+      "email": "marco@gmail.com",
+      "password": "U2FsdGVkX1/5sF4vxKlcO+kwf70mWYrFo/BaE1cMr5c=",
+      "ruoli_sede": [
+        {
+          "sede_nome": "Verona",
+          "ruolo_nome": "guest"
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "nome": "pietro",
+      "cognome": "spoletti",
+      "username": "pietroS",
+      "email": "pietro@gmail.com",
+      "password": "U2FsdGVkX189tu23tpwK2PZWH2xLWRsYd2tM+rMLrbc=",
+      "ruoli_sede": [
+        {
+          "sede_nome": "Verona",
+          "ruolo_nome": "keyOwner"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "nome": "fabio",
+      "cognome": "pallaro",
+      "username": "fabioP",
+      "email": "fabio@gmail.com",
+      "password": "U2FsdGVkX1/5sF4vxKlcO+kwf70mWYrFo/BaE1cMr5c=",
+      "ruoli_sede": [
+        {
+          "sede_nome": "Verona",
+          "ruolo_nome": "admin"
+        },
+        {
+          "sede_nome": "Padova",
+          "ruolo_nome": "admin"
+        }
+      ]
+    }
+  ],
+  "prenotazioni": [
+    {
+      "id": "0",
+      "utente": "pietroS",
+      "sede": "Verona",
+      "data": "2024-07-24"
+    },
+    {
+      "id": "1",
+      "utente": "fabioP",
+      "sede": "Verona",
+      "data": "2024-07-23"
+    }
+  ]
+}

@@ -30,7 +30,6 @@ import {
   ],
 })
 export class AccediComponent implements OnInit {
-
   message: string = '';
   errorMessage: string = '';
 
@@ -39,7 +38,7 @@ export class AccediComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getErrorMessage$.subscribe((message) => {
       this.errorMessage = message;
-    })
+    });
   }
 
   accediForm = new FormGroup({
@@ -58,11 +57,14 @@ export class AccediComponent implements OnInit {
 
       const userData = this.accediForm.value;
 
-      this.message = 'Accesso effettuato con successo';
+      this.userService.getSuccessMessage$.subscribe((message) => {
+        this.message = message;
+        if (this.message != '') {
+          this.errorMessage = '';
+        }
+      });
 
-      this.userService
-        .login(userData)
-        .subscribe({})
+      this.userService.login(userData).subscribe({});
     }
   }
 }

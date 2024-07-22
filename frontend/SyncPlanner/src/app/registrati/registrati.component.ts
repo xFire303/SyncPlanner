@@ -143,7 +143,9 @@ export class RegistratiComponent implements OnInit {
         (sede) => this.sediForm.value[sede]
       );
 
-      this.message = 'Utente creato con successo!';
+      this.userService.getSuccessMessage$.subscribe((message) => {
+        this.message = message;
+      });
 
       this.userService.register(userData, selectedSedi).subscribe({});
     }
