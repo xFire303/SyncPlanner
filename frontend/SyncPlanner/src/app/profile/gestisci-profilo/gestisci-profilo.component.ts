@@ -84,8 +84,12 @@ export class GestisciProfiloComponent implements OnInit {
   submitForm() {
     if (this.profileForm.valid) {
       const { confermaPassword, ...userData } = this.profileForm.value;
+      
+      this.userService.getSuccessMessage$.subscribe((message) => {
+        this.message = message;
+      });
+
       this.userService.changeCredentials(userData).subscribe({});
-      this.message = 'Credenziali modificate con successo';
       this.profileForm.patchValue({
         password: '',
         confermaPassword: ''

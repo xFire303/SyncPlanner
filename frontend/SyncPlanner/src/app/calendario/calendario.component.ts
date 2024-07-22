@@ -17,6 +17,7 @@ import { FiltroService } from '../services/filtro.service';
 import { UserService } from '../services/user.service';
 
 import itLocale from '@fullcalendar/core/locales/it';
+import googleCalendarPlugin from '@fullcalendar/google-calendar';
 
 @Component({
   selector: 'app-calendario',

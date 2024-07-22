@@ -43,9 +43,9 @@
           <a [routerLink]="['/registrati']">Registrati ora</a>
         </h3>
       </div>
-      @if(errorMessage != ''){
+      @if(errorMessage != '' && message == '') {
       <p class="text-error">{{ errorMessage }}</p>
-      } @else if (message != '') {
+      } @else if (message != '' && errorMessage == '') {
       <p class="text-success">{{ message }}</p>
       }
     </form>

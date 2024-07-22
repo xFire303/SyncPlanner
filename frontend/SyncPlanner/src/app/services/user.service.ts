@@ -16,8 +16,10 @@ export class UserService {
   private localStorageKey = 'is_authenticated';
 
   private errorMessage$ = new Subject<string>();
-
   getErrorMessage$ = this.errorMessage$.asObservable();
+
+  private successMessage$ = new Subject<string>();
+  getSuccessMessage$ = this.successMessage$.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -64,6 +66,9 @@ export class UserService {
               this.errorMessage$.next("L'email inserita è già stata usata")
             );
           }
+
+          this.successMessage$.next('Registrazione effettuata con successo');
+          
           return this.http.post(`${environment.apiUrl}/users`, userModel).pipe(
             delay(1500),
             tap(() => this.navigateTo('/accedi'))
@@ -85,6 +90,8 @@ export class UserService {
           if (decryptedPassword !== userData.password) {
             throw this.errorMessage$.next('La password inserita è sbagliata');
           }
+
+          this.successMessage$.next('Accesso effettuato con successo');
           localStorage.setItem(this.localStorageKey, 'true');
           localStorage.setItem('idUtente', user.id.toString());
           this.startLogoutTimer();
@@ -147,6 +154,9 @@ export class UserService {
 
   changeCredentials(userData: any): Observable<any> {
     userData.password = this.encryptPassword(userData.password);
+
+    this.successMessage$.next('Credenziali modificate con successo');
+
     return this.http
       .patch(
         `${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`,

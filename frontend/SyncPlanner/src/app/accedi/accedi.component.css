@@ -101,6 +101,11 @@ form .text h3 a:hover {
   text-decoration: underline;
 }
 
+.input-box .text-error {
+  margin-top: 0.5rem;
+  display: block;
+}
+
 .text-error {
   color: red;
   font-size: 0.9rem;
