@@ -9,10 +9,16 @@
         <module name="SyncLab" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Nicolis" target="17" />
+      <module name="SyncLab (1)" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Nicolis" options="-parameters" />
       <module name="SyncLab" options="-parameters" />
+      <module name="SyncLab (1)" options="-parameters" />
     </option>
   </component>
 </project>

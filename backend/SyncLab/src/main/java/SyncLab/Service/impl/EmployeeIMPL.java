@@ -5,7 +5,7 @@ import SyncLab.Dto.LoginDTO;
 import SyncLab.Entity.Employee;
 import SyncLab.Repo.EmployeeRepo;
 import SyncLab.Service.EmployeeService;
-import SyncLab.response.Response.LoginResponse;
+import SyncLab.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
