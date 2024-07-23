@@ -1,4 +1,4 @@
-package SyncLab.response.Response;
+package SyncLab.response;
 
 public class LoginResponse {
     String message;
