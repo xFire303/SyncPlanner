@@ -1,0 +1,156 @@
+@if(showRegistratiForm){
+
+<div class="form-container">
+  <div class="wrapper">
+    <h2>Registrazione</h2>
+    <form [formGroup]="registratiForm" (ngSubmit)="submitForm()">
+      <div class="input-box">
+        <input
+          type="text"
+          [required]="true"
+          pInputText
+          formControlName="nome"
+          placeholder="Inserisci il tuo nome"
+          (ngModelChange)="registratiForm.get('nome')?.markAsTouched()"
+        />
+        @if (registratiForm.get('nome')?.touched &&
+        registratiForm.get('nome')?.hasError('required')) {
+        <p class="text-error">Il nome è richiesto</p>
+        }
+      </div>
+
+      <div class="input-box">
+        <input
+          type="text"
+          [required]="true"
+          pInputText
+          formControlName="cognome"
+          placeholder="Inserisci il tuo cognome"
+          (ngModelChange)="registratiForm.get('cognome')?.markAsTouched()"
+        />
+        @if (registratiForm.get('cognome')?.touched &&
+        registratiForm.get('cognome')?.hasError('required')) {
+        <p class="text-error">Il cognome è richiesto</p>
+        }
+      </div>
+
+      <div class="input-box">
+        <input
+          type="text"
+          [required]="true"
+          pInputText
+          formControlName="email"
+          placeholder="Inserisci la tua email"
+          (ngModelChange)="registratiForm.get('email')?.markAsTouched()"
+        />
+        @if (registratiForm.get('email')?.touched &&
+        registratiForm.get('email')?.hasError('required')) {
+        <p class="text-error">L'email è richiesta</p>
+        } @else if (registratiForm.get('email')?.hasError('email')) {
+        <p class="text-error">L'email non è valida</p>
+        }
+        @if(errorMessage != ''){
+        <p class="text-error">{{errorMessage}}</p>
+        }
+      </div>
+
+      <div class="input-box">
+        <input
+          type="password"
+          [required]="true"
+          pInputText
+          formControlName="password"
+          placeholder="Crea una password"
+          (ngModelChange)="registratiForm.get('password')?.markAsTouched()"
+        />
+        @if (registratiForm.get('password')?.touched &&
+        registratiForm.get('password')?.hasError('required')) {
+        <p class="text-error">La password è richiesta</p>
+        } @else if (registratiForm.get('password')?.hasError('minlength')) {
+        <p class="text-error">La password deve avere almeno 8 caratteri</p>
+        } @else if (registratiForm.get('password')?.hasError('pattern')) {
+        <p class="text-error">La password non è sicura!</p>
+        }
+      </div>
+      <div class="input-box">
+        <input
+          type="password"
+          [required]="true"
+          pInputText
+          formControlName="confermaPassword"
+          placeholder="Conferma la password"
+        />
+        @if
+        (registratiForm.get('confermaPassword')?.hasError('passwordMismatch')) {
+        <p class="text-error">Le password non corrispondono</p>
+        }
+      </div>
+      <div class="policy">
+        <input type="checkbox" [required]="true" formControlName="terms" />
+        <h3>Accetto tutti i termini & condizioni</h3>
+      </div>
+      @if (registratiForm.get('terms')?.touched &&
+      registratiForm.get('terms')?.hasError('required')) {
+      <p class="text-error-terms">Obbligatorio</p>
+      }
+      <div class="input-box button">
+        <input
+          type="Submit"
+          value="Registrati"
+          [disabled]="registratiForm.invalid"
+        />
+      </div>
+      <div class="text">
+        <h3>
+          Hai già un account? <a [routerLink]="['/accedi']">Accedi ora</a>
+        </h3>
+      </div>
+    </form>
+  </div>
+</div>
+} @else {
+<div class="form-container">
+  <div class="wrapper-sedi">
+    @if(!almenoUnaSedeSelezionata) {
+    <h2>Seleziona almeno una sede</h2>
+
+    } @else{
+    <h2>Seleziona le sedi</h2>
+    }
+    <form [formGroup]="sediForm" (ngSubmit)="submitSediForm()">
+      <div class="sedi-container">
+        @for(sede of sedi; track sede){
+        <div class="form-check">
+          <input
+            type="checkbox"
+            [formControlName]="sede"
+            class="form-check-input"
+            id="sede-{{ sede }}"
+          />
+          <label class="form-check-label" for="sede-{{ sede }}">
+            {{ sede }}
+          </label>
+        </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="goBack()">
+          Torna indietro
+        </button>
+
+        <input
+          type="submit"
+          value="Conferma"
+          class="btn btn-primary"
+          [disabled]="!almenoUnaSedeSelezionata"
+        />
+      </div>
+      @if(message != ''){
+      <p class="text-success">{{ message }}</p>
+      }
+    </form>
+  </div>
+</div>
+
+}

@@ -1,0 +1,23 @@
+<div class="wrapper">
+  <h2>Gestisci Prenotazioni</h2>
+  <div class="prenotazioni-container">
+    @for(prenotazione of prenotazioni; track prenotazione.id) {
+    <div class="prenotazione-item">
+      <div class="detail"><strong>ID prenotazione: </strong>{{prenotazione.id}}</div>
+      <div class="detail"><strong>Utente: </strong>{{prenotazione.utente}}</div>
+      <div class="detail"><strong>Data Prenotazione: </strong>{{prenotazione.data}}</div>
+      <div class="detail"><strong>Sede: </strong>{{prenotazione.sede}}</div>
+      <div class="buttons">
+        <button
+          (click)="modificaPrenotazione(prenotazione.id)"
+          class="btn btn-primary"
+        >
+          Modifica
+        </button>
+        <button class="btn btn-danger" (click)="elimina(prenotazione.id)">Elimina</button>
+      </div>
+    </div>
+
+    }
+  </div>
+</div>

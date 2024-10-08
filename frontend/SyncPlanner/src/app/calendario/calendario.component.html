@@ -1,0 +1,55 @@
+<div class="calendar-container">
+  <full-calendar [options]="calendarOptions"></full-calendar>
+</div>
+
+@if(showAddPrenotazione && checkUserRoles()){
+<div class="overlay">
+  <div class="modal-content">
+    <app-add-prenotazione
+      [data]="selectedDate"
+      (close)="chiudiPrenotazione()"
+      (addPrenotazione)="onPrenotazioneAggiunta($event)"
+    ></app-add-prenotazione>
+  </div>
+</div>
+} @if(showGestisciPrenotazione && checkUserRoles()){
+<div class="overlay">
+  <div class="modal-content">
+    <app-modifica-prenotazione
+      [id]="selectedId"
+      [data]="selectedDate"
+      [utente]="selectedUtente"
+      [sede]="selectedSede"
+      [showGestisciPrenotazione]="showGestisciPrenotazione"
+      (closeGestisciPrenotazione)="chiudiGestisciPrenotazione()"
+    ></app-modifica-prenotazione>
+  </div>
+</div>
+}@if(showLeggenda){
+<div class="overlay">
+  <div class="modal-content">
+    <app-leggenda-calendario
+      (closeLeggenda)="chiudiLeggenda()"
+    ></app-leggenda-calendario>
+  </div>
+</div>
+}@if(showFiltro){
+<div class="overlay">
+  <div class="modal-content">
+    <app-filtro (closeFiltro)="chiudiFiltro()"></app-filtro>
+  </div>
+</div>
+}
+@if(showVisualizzaPrenotazione){
+  <div class="overlay">
+    <div class="modal-content">
+      <app-visualizza-prenotazione
+        [id]="selectedId"
+        [utente]="selectedUtente"
+        [data]="selectedDate"
+        [sede]="selectedSede"
+        (close)="chiudiVisualizzaPrenotazione()"
+      ></app-visualizza-prenotazione>
+    </div>
+  </div>
+}

@@ -1,0 +1,15 @@
+<div class="wrapper">
+  <h2>Gestisci Utenti</h2>
+  <div class="utenti-container">
+    @for(utente of filteredUtenti; track utente.id){
+    <div class="user-card" (click)="navigateToEditUtente(utente.id)">
+      <div class="user-name">{{ utente.username }}</div>
+      <div class="user-roles">
+        @for(ruolo of utente.ruoli_sede; track ruolo){
+        <span class="role-tag">{{ ruolo.sede_nome }} {{ ruolo.ruolo_nome }}</span>
+        }
+      </div>
+    </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,69 @@
+nav.navbar {
+  height: 70px;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.user h1 {
+  position: relative;
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.user h1::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 28px;
+  border-radius: 12px;
+  background: #ff8a00;
+}
+
+img {
+  cursor: pointer;
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+.text-custom {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.divider {
+  width: 100%;
+  /* Imposta la larghezza della linea */
+  border: none;
+  border-top: 1px solid #000;
+  /* Imposta lo stile della linea */
+  margin: 10px 0;
+  /* Imposta il margine sopra e sotto la linea */
+}
+
+i {
+  font-size: 1.5rem;
+  transition: transform 0.1s ease-out;
+  color: #163c70;
+}
+
+i:hover {
+  transform: translateY(4px);
+}
+
+@media screen and (max-width: 768px) {
+  img {
+    height: 2rem;
+  }
+
+  .user h1 {
+    font-size: 0.8rem;
+  }
+}

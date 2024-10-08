@@ -1,0 +1,24 @@
+<div class="modal-backdrop" (click)="closeNotifications()"></div>
+
+<div class="notifications-panel">
+  <button type="button" class="close" (click)="closeNotifications()">
+    <i class="fas fa-times"></i>
+  </button>
+  <h2>Notifiche</h2>
+  <div class="header-container">
+    <p (click)="clearAllNotifications()">Pulisci tutte le notifiche</p>
+  </div>
+  <ul>
+    @for(notifica of notifications; track notifica){
+    <li class="notification-item">
+      <div class="notification-header">
+        <span class="notification-creator">{{ notifica.creator }}</span>
+        <span class="notification-time">{{ notifica.time }}</span>
+      </div>
+      <div class="notification-content">
+        {{ notifica.content }}
+      </div>
+    </li>
+    }
+  </ul>
+</div>

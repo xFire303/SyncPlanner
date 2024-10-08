@@ -1,0 +1,52 @@
+<div class="form-container">
+  <div class="wrapper">
+    <h2>Gestisci ruoli di {{ currentUserUsername }}</h2>
+    <button class="close-button" (click)="chiudi()">
+      <i class="fas fa-times"></i>
+    </button>
+    <form [formGroup]="editUtenteForm" (ngSubmit)="submitForm()">
+      <div class="roles-section">
+        @for(role of roles; track role){
+        <div>
+          <h3>{{ role }}</h3>
+          <div class="row">
+            @for(location of locations; track location){
+            <div class="col-md-4 col-sm-6 checkbox-container">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  [formControlName]="role + '_' + location"
+                  class="form-check-input"
+                />
+                <label
+                  class="form-check-label"
+                  for="{{ role + '_' + location }}"
+                >
+                  {{ location }}
+                </label>
+              </div>
+            </div>
+
+            }
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="buttons">
+        <input
+          type="submit"
+          class="btn btn-success"
+          value="Salva modifiche"
+          [disabled]="editUtenteForm.invalid"
+        />
+        <input
+          type="button"
+          class="btn btn-danger"
+          value="Elimina utente"
+          (click)="deleteUser()"
+        />
+      </div>
+    </form>
+  </div>
+</div>

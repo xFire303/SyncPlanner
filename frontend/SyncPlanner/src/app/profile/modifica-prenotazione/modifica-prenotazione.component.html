@@ -1,0 +1,62 @@
+<div class="form-container">
+  <div class="wrapper">
+    <h2>Modifica Prenotazione</h2>
+    @if(showGestisciPrenotazione){
+      <button class="close-button" (click)="chiudiGestisciPrenotazione()">
+        <i class="fas fa-times"></i>
+      </button>
+    }
+    @else{
+      <button class="close-button" [routerLink]="['/profile/gestisci-prenotazioni']">
+        <i class="fas fa-times"></i>
+      </button>
+    }
+    <form [formGroup]="modPrenotazioneForm" (ngSubmit)="submitForm()">
+      <div class="input-box">
+        <input
+          type="text"
+          pInputText
+          formControlName="utente"
+          placeholder="utente"
+          [required]="true"
+          readonly
+        />
+      </div>
+      <div class="input-box">
+        <input
+          type="date"
+          [required]="true"
+          pInputText
+          formControlName="data-prenotazione"
+          placeholder="Data prenotazione"
+          (ngModelChange)="
+            modPrenotazioneForm.get('data-prenotazione')?.markAsTouched()
+          "
+        />
+      </div>
+      <div class="input-box">
+        <input type="text" pInputText placeholder="Sede" formControlName="sede" readonly />
+      </div>
+
+      <div class="buttons">
+        <input
+          type="Submit"
+          class="btn btn-success"
+          value="Salva modifiche"
+          [disabled]="modPrenotazioneForm.invalid"
+        />
+
+        @if(!showGestisciPrenotazione){
+          <button type="button" class="btn btn-danger" (click)="elimina()" [routerLink]="['/profile/gestisci-prenotazioni']">
+            Elimina
+          </button>
+        }
+        @else {
+          <button type="button" class="btn btn-danger" (click)="elimina()">
+            Elimina
+          </button>
+        }
+      </div>
+    </form>
+  </div>
+</div>
