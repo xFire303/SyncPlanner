@@ -1,0 +1,73 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "nome": "pietro",
+      "cognome": "spoletti",
+      "username": "pietroS",
+      "email": "pietro@gmail.com",
+      "password": "U2FsdGVkX189tu23tpwK2PZWH2xLWRsYd2tM+rMLrbc=",
+      "ruoli_sede": [
+        {
+          "sede_nome": "Verona",
+          "ruolo_nome": "keyOwner"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "nome": "fabio",
+      "cognome": "pallaro",
+      "username": "fabioP",
+      "email": "fabio@gmail.com",
+      "password": "U2FsdGVkX1/5sF4vxKlcO+kwf70mWYrFo/BaE1cMr5c=",
+      "ruoli_sede": [
+        {
+          "sede_nome": "Verona",
+          "ruolo_nome": "admin"
+        },
+        {
+          "sede_nome": "Padova",
+          "ruolo_nome": "admin"
+        }
+      ]
+    },
+    {
+      "id": "0",
+      "nome": "marco",
+      "cognome": "bosco",
+      "username": "marcoB",
+      "email": "marco@gmail.com",
+      "password": "U2FsdGVkX1/Uw8oYHe4p3/mxZ610WxoJnW06oWeXhkM=",
+      "ruoli_sede": [
+        {
+          "sede_nome": "Verona",
+          "ruolo_nome": "admin"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "nome": "a35a",
+      "cognome": "buydsvcgu",
+      "username": "a35aB",
+      "email": "ciao@ciao",
+      "password": "U2FsdGVkX1+UQwheilaT3arynp9XVO/c9xhRqLwV+Nk=",
+      "ruoli_sede": [
+        {
+          "sede_nome": "Verona",
+          "ruolo_nome": "guest"
+        }
+      ]
+    }
+  ],
+  "prenotazioni": [
+    {
+      "id": "c807",
+      "data": "2024-09-27",
+      "utente": "a35aB",
+      "sede": "Verona",
+      "partecipanti": []
+    }
+  ]
+}

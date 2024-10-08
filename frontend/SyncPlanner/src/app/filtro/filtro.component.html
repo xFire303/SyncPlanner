@@ -1,0 +1,97 @@
+<div class="filtro-container">
+  <div class="wrapper">
+    <h2>Filtro</h2>
+    <button class="close-button" (click)="chiudi()">
+      <i class="fas fa-times"></i>
+    </button>
+    <form [formGroup]="filtroForm" (ngSubmit)="submitForm()">
+      @if(checkSede('Verona')){
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          formControlName="Verona"
+          value="Verona"
+          id="flexCheckDefault"
+        />
+        <label class="form-check-label" for="flexCheckDefault">
+          Sede Verona
+        </label>
+      </div>
+      } @if(checkSede('Padova')){
+
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          formControlName="Padova"
+          value="Padova"
+          id="flexCheckChecked"
+        />
+        <label class="form-check-label" for="flexCheckChecked">
+          Sede Padova
+        </label>
+      </div>
+      } @if(checkSede('Milano')){
+
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          formControlName="Milano"
+          value="Milano"
+          id="flexCheckChecked"
+        />
+        <label class="form-check-label" for="flexCheckChecked">
+          Sede Milano
+        </label>
+      </div>
+      } @if(checkSede('Como')){
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          formControlName="Como"
+          value="Como"
+          id="flexCheckChecked"
+        />
+        <label class="form-check-label" for="flexCheckChecked">
+          Sede Como
+        </label>
+      </div>
+
+      } @if (checkSede('Napoli')) {
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          formControlName="Napoli"
+          value="Napoli"
+          id="flexCheckChecked"
+        />
+        <label class="form-check-label" for="flexCheckChecked">
+          Sede Napoli
+        </label>
+      </div>
+
+      } @if (checkSede('Roma')) {
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          formControlName="Roma"
+          value="Roma"
+          id="flexCheckChecked"
+        />
+        <label class="form-check-label" for="flexCheckChecked">
+          Sede Roma
+        </label>
+      </div>
+
+      }
+      <div class="input-box button">
+        <input type="submit" value="Filtra" />
+      </div>
+    </form>
+  </div>
+</div>

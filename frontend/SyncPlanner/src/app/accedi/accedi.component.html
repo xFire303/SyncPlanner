@@ -1,0 +1,53 @@
+<div class="form-container">
+  <div class="wrapper">
+    <h2>Accedi</h2>
+    <form [formGroup]="accediForm" (ngSubmit)="submitForm()">
+      <div class="input-box">
+        <input
+          type="text"
+          [required]="true"
+          pInputText
+          formControlName="email"
+          placeholder="Inserisci la tua email"
+          (ngModelChange)="accediForm.get('email')?.markAsTouched()"
+        />
+        @if (accediForm.get('email')?.touched &&
+        accediForm.get('email')?.hasError('required')) {
+        <p class="text-error">L'email è richiesta</p>
+        } @else if (accediForm.get('email')?.hasError('email')) {
+        <p class="text-error">L'email non è valida</p>
+        }
+      </div>
+
+      <div class="input-box">
+        <input
+          type="password"
+          [required]="true"
+          pInputText
+          formControlName="password"
+          placeholder="Inserisci la password"
+          (ngModelChange)="accediForm.get('email')?.markAsTouched()"
+        />
+        @if (accediForm.get('password')?.touched &&
+        accediForm.get('password')?.hasError('required')) {
+        <p class="text-error">La password è richiesta</p>
+        }
+      </div>
+
+      <div class="input-box button">
+        <input type="Submit" value="Accedi" [disabled]="accediForm.invalid" />
+      </div>
+      <div class="text">
+        <h3>
+          Non hai un account?
+          <a [routerLink]="['/registrati']">Registrati ora</a>
+        </h3>
+      </div>
+      @if(errorMessage != '' && message == '') {
+      <p class="text-error">{{ errorMessage }}</p>
+      } @else if (message != '' && errorMessage == '') {
+      <p class="text-success">{{ message }}</p>
+      }
+    </form>
+  </div>
+</div>

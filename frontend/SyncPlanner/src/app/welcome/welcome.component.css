@@ -1,0 +1,95 @@
+.welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #163C70;
+}
+
+.welcome-content {
+    text-align: center;
+    color: white;
+}
+
+@keyframes colorChange {
+    0% {
+        color: #FF8A00;
+        /* Inizia con il colore arancione */
+    }
+
+    100% {
+        color: white;
+        /* Finisce con il colore bianco */
+    }
+}
+
+.welcome-content h1 {
+    font-size: 3rem;
+    overflow: hidden;
+    /* Assicura che le lettere non siano visibili fuori dal contenitore */
+    white-space: nowrap;
+    /* Assicura che il testo rimanga in una riga */
+}
+
+.welcome-content h1 span {
+    display: inline-block;
+    animation: colorChange 5s forwards infinite;
+    /* Applica l'animazione alle lettere */
+    animation-delay: calc(2s + (0.1s * var(--index)));
+    /* Ritarda l'inizio di ogni animazione */
+}
+
+.welcome-content p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+.buttons {
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+}
+
+.btn-login {
+    background-color: transparent;
+    color: white;
+    margin-right: 1rem;
+    border: 2px solid #FF8A00;
+}
+
+.btn-register {
+    background-color: transparent;
+    color: white;
+    border: 2px solid #FF8A00;
+}
+
+.btn-register:hover {
+    background-color: #FF8A00;
+    border-color: #FF8A00;
+    color: white;
+}
+
+.btn-login:hover {
+    background-color: #FF8A00;
+    border-color: #FF8A00;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .welcome-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .welcome-content p {
+        font-size: 1.2rem;
+    }
+}

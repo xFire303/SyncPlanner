@@ -1,0 +1,79 @@
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid d-flex align-items-center">
+    <div class="d-flex align-items-center">
+      <img
+        [routerLink]="['/home']"
+        src="https://www.synclab.it/images/navbar/synclab_logo_blue.svg"
+        class="img-fluid"
+        alt="Sync Lab"
+      />
+    </div>
+    <div class="user mx-auto text-center">
+      <h1>Benvenuto {{ username }}</h1>
+    </div>
+    <div class="d-flex align-items-center">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto me-5 mb-2 mb-lg-0">
+          <!-- Icone visibili solo su schermi grandi -->
+          <li class="nav-item mx-4 d-none d-lg-block">
+            <a [routerLink]="['/home']"><i class="pi pi-home"></i></a>
+          </li>
+          <li class="nav-item mx-4 d-none d-lg-block">
+            <a [routerLink]="['/profile/gestisci-profilo']"
+              ><i class="pi pi-user"></i
+            ></a>
+          </li>
+          <li class="nav-item mx-4 d-none d-lg-block">
+            <i
+              class="pi pi-bell"
+              pBadge
+              value="3"
+              (click)="toggleNotifications()"
+              style="cursor: pointer"
+            ></i>
+          </li>
+
+          <!-- Testo visibile solo su schermi piccoli -->
+          <li class="nav-item mx-2 d-lg-none mt-5 mb-2">
+            <a
+              [routerLink]="['/home']"
+              class="d-flex justify-content-center align-items-center text-custom"
+              >Home</a
+            >
+          </li>
+          <hr class="divider d-lg-none" />
+          <li class="nav-item mx-2 d-lg-none mb-2">
+            <a
+              [routerLink]="['/profile/gestisci-profilo']"
+              class="d-flex justify-content-center align-items-center text-custom"
+              >Profilo</a
+            >
+          </li>
+          <hr class="divider d-lg-none" />
+          <li class="nav-item mx-2 d-lg-none mb-2">
+            <a
+              [routerLink]="['/notifiche']"
+              class="d-flex justify-content-center align-items-center text-custom"
+              >Notifiche</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <app-notifiche
+    *ngIf="showNotifications"
+    (close)="toggleNotifications()"
+  ></app-notifiche>
+</nav>
