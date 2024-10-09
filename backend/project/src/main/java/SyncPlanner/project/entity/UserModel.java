@@ -40,14 +40,6 @@ public class UserModel {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_sede",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "sede_id")
-    )
-    private Set<SediModel> sedi;
-
     @OneToMany(mappedBy = "user")
     private Set<UserSedeRoleModel> userSedeRoles = new HashSet<>();
 }

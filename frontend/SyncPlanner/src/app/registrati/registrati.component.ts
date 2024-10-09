@@ -147,7 +147,7 @@ export class RegistratiComponent implements OnInit {
         this.message = message;
       });
 
-      this.userService.register(userData).subscribe({});
+      this.userService.register(userData, selectedSedi).subscribe({});
     }
   }
 }

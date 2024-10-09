@@ -29,20 +29,19 @@ export class UserService {
     return hashedPassword;
   }
 
-  register(userData: any): Observable<any> {
+  register(userData: any, sediData: string[]): Observable<any> {
     userData.password = this.encryptPassword(userData.password);
-
-    // const ruoliSede = sediData.map((sede: string) => ({
-    //   sede_nome: sede,
-    //   ruolo_nome: 'guest',
-    // }));
 
     const userModel = {
       name: userData.nome.toLowerCase(),
       surname: userData.cognome.toLowerCase(),
       email: userData.email,
       password: userData.password,
-      // ruoli_sede: ruoliSede,
+    };
+
+    const registrationData = {
+      user: userModel,
+      sedi: sediData
     };
 
     return this.http
@@ -60,7 +59,7 @@ export class UserService {
 
           this.successMessage$.next('Registrazione effettuata con successo');
          
-          return this.http.post(`${environment.apiUrl}/signup`, userModel).pipe(
+          return this.http.post(`${environment.apiUrl}/signup`, registrationData).pipe(
             delay(1500),
             tap(() => this.navigateTo('/accedi'))
           );
@@ -70,7 +69,7 @@ export class UserService {
 
   login(userData: any): Observable<any> {
     return this.http
-      .get<any[]>(`${environment.apiUrl}/users?email=${userData.email}`)
+      .get<any[]>(`${environment.apiUrl}/users/emails?email=${userData.email}`)
       .pipe(
         map((users) => {
           const user = users.find((u) => u.email === userData.email);

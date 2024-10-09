@@ -25,9 +25,6 @@ public class SediModel {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(mappedBy = "sedi")
-    private Set<UserModel> users;
-
     @OneToMany(mappedBy = "sede")
     private Set<UserSedeRoleModel> userSedeRoles = new HashSet<>();
 }
