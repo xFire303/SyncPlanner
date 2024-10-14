@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class SediService {
     @Autowired
-    private static SediRepo sediRepo;
+    private SediRepo sediRepo;
 
-    public static SediModel getSedeByName(String name) {
+    public SediModel getSedeByName(String name) {
         return sediRepo.findByName(name).orElse(null);
     }
 }

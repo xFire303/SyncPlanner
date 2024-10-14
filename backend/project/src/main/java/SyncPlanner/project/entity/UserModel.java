@@ -30,10 +30,6 @@ public class UserModel {
     @Column(name = "username", unique = true)
     private String username;
 
-    public String generateUsername() {
-        return name.toLowerCase() + Character.toUpperCase(surname.charAt(0));
-    };
-
     @Column(name = "email", unique = true)
     private String email;
 

@@ -57,10 +57,6 @@ export class RegistratiComponent implements OnInit {
     this.sediForm.valueChanges.subscribe(() => {
       this.updateAlmenoUnaSedeSelezionata();
     });
-
-    this.userService.getErrorMessage$.subscribe((message) => {
-      this.errorMessage = message;
-    });
   }
 
   initializeForm() {
@@ -117,17 +113,18 @@ export class RegistratiComponent implements OnInit {
     this.showRegistratiForm = true;
   }
 
-  async submitForm() {
+  submitForm() {
     if (this.registratiForm.valid) {
-      const emailExists = await this.userService.checkIfEmailAlreadyExists(
-        this.registratiForm.value
-      );
-      if (emailExists) {
-        this.errorMessage = 'Esiste già un utente con questa email';
-        this.showRegistratiForm = true;
-      } else {
-        this.showRegistratiForm = false;
-      }
+      this.userService.checkIfEmailAlreadyExists(this.registratiForm.value).then(
+        (emailExists) => {
+          if (emailExists) {
+            this.errorMessage = 'Esiste già un utente con questa email';
+            this.showRegistratiForm = true;
+          } else {
+            this.showRegistratiForm = false;
+          }
+        }
+      )
     }
   }
 

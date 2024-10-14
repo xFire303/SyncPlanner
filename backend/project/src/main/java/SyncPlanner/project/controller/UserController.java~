@@ -31,6 +31,7 @@ public class UserController {
     @Autowired
     private UserSedeRoleService userSedeRoleService;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/signup")
     public void addUser(@RequestBody UserRegistration userRegistration) {
         UserModel user = userRegistration.getUser();
@@ -55,11 +56,13 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/users/emails")
     public List<String> getAllUserEmails() {
         return userService.getAllUserEmails();
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/signin")
     public ResponseEntity<String> loginUser(@RequestBody UserLoginRequest loginRequest) {
         boolean isAuthenticated = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword()).isPresent();

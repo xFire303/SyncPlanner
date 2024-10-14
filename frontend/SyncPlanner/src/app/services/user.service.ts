@@ -1,10 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, timer, throwError } from 'rxjs';
-import { map, takeUntil, switchMap, tap, delay } from 'rxjs/operators';
+import { Observable, Subject, timer, throwError, from, of } from 'rxjs';
+import {
+  map,
+  takeUntil,
+  switchMap,
+  tap,
+  delay,
+  catchError,
+} from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 
 import { lastValueFrom } from 'rxjs';
 
@@ -29,6 +36,20 @@ export class UserService {
     return hashedPassword;
   }
 
+  checkIfEmailAlreadyExists(userData: any): Promise<boolean> {
+    return lastValueFrom(
+      this.http.get<string[]>(`${environment.apiUrl}/users/emails`).pipe(
+        map((emails) => {
+          return emails.includes(userData.email);
+        }),
+        catchError((error) => {
+          console.error('Error fetching emails:', error);
+          return of(false);
+        })
+      )
+    );
+  }
+
   register(userData: any, sediData: string[]): Observable<any> {
     userData.password = this.encryptPassword(userData.password);
 
@@ -41,67 +62,42 @@ export class UserService {
 
     const registrationData = {
       user: userModel,
-      sedi: sediData
+      sedi: sediData.map(sede => 
+        sede.toLowerCase())
     };
 
-    return this.http
-      .get<any[]>(`${environment.apiUrl}/users/emails?email=${userData.email}`)
-      .pipe(
-        switchMap((users) => {
-          const emailExists = users.some(
-            (user) => user.email === userData.email
-          );
-          if (emailExists) {
-            return throwError(() =>
-              this.errorMessage$.next("L'email inserita è già stata usata")
-            );
-          }
+    this.successMessage$.next('Registrazione effettuata con successo');
 
-          this.successMessage$.next('Registrazione effettuata con successo');
-         
-          return this.http.post(`${environment.apiUrl}/signup`, registrationData).pipe(
-            delay(1500),
-            tap(() => this.navigateTo('/accedi'))
-          );
-        })
+    return this.http
+      .post(`${environment.apiUrl}/signup`, registrationData)
+      .pipe(
+        delay(1500),
+        tap(() => this.navigateTo('/accedi'))
       );
   }
 
   login(userData: any): Observable<any> {
     return this.http
-      .get<any[]>(`${environment.apiUrl}/users/emails?email=${userData.email}`)
+      .get<any[]>(`${environment.apiUrl}/users/emails`)
       .pipe(
         map((users) => {
           const user = users.find((u) => u.email === userData.email);
           if (!user) {
             throw this.errorMessage$.next("L'email inserita è sbagliata");
-          }
-          // const decryptedPassword = this.decryptPassword(user.password);
-          // if (decryptedPassword !== userData.password) {
-          //   throw this.errorMessage$.next('La password inserita è sbagliata');
-          // }
+          }else{
 
-          this.successMessage$.next('Accesso effettuato con successo');
-          localStorage.setItem(this.localStorageKey, 'true');
-          localStorage.setItem('idUtente', user.id.toString());
-          this.startLogoutTimer();
-          return user;
+  
+            this.successMessage$.next('Accesso effettuato con successo');
+            localStorage.setItem(this.localStorageKey, 'true');
+            localStorage.setItem('idUtente', user.id.toString());
+            this.startLogoutTimer();
+            return user;
+          }
+          
         }),
         delay(1500),
         tap(() => this.navigateTo('/home'))
       );
-  }
-
-  checkIfEmailAlreadyExists(userData: any): Promise<boolean> {
-    const users$ = this.http
-      .get<any[]>(`${environment.apiUrl}/users/emails?email=${userData.email}`)
-      .pipe(
-        map((users) => {
-          return users.some((user) => user.email === userData.email);
-        })
-      );
-
-    return lastValueFrom(users$);
   }
 
   getCurrentUserData(): Observable<any> {
@@ -135,11 +131,6 @@ export class UserService {
 
   private navigateTo(route: string): void {
     timer(1000).subscribe(() => this.router.navigate([route]));
-  }
-
-  private handleError(error: any): Observable<never> {
-    console.error(error);
-    return throwError(() => new Error('An error occurred'));
   }
 
   changeCredentials(userData: any): Observable<any> {
