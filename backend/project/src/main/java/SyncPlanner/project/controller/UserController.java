@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -61,13 +62,19 @@ public class UserController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<String> loginUser(@RequestBody UserLoginRequest loginRequest) {
-        boolean isAuthenticated = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword()).isPresent();
+    public ResponseEntity<?> loginUser(@RequestBody UserLoginRequest loginRequest) {
+        Optional<UserModel> user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
 
-        if (isAuthenticated) {
-            return ResponseEntity.ok("Login successful!");
+
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get().getId());
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
         }
+    }
+
+    @GetMapping("/users/{id}")
+    public Optional<UserModel> getUserById(@PathVariable("id") Long id) {
+        return userService.getUserById(id);
     }
 }

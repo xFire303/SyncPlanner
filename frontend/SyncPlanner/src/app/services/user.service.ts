@@ -62,8 +62,7 @@ export class UserService {
 
     const registrationData = {
       user: userModel,
-      sedi: sediData.map(sede => 
-        sede.toLowerCase())
+      sedi: sediData.map((sede) => sede.toLowerCase()),
     };
 
     this.successMessage$.next('Registrazione effettuata con successo');
@@ -77,27 +76,16 @@ export class UserService {
   }
 
   login(userData: any): Observable<any> {
-    return this.http
-      .get<any[]>(`${environment.apiUrl}/users/emails`)
-      .pipe(
-        map((users) => {
-          const user = users.find((u) => u.email === userData.email);
-          if (!user) {
-            throw this.errorMessage$.next("L'email inserita è sbagliata");
-          }else{
-
-  
-            this.successMessage$.next('Accesso effettuato con successo');
-            localStorage.setItem(this.localStorageKey, 'true');
-            localStorage.setItem('idUtente', user.id.toString());
-            this.startLogoutTimer();
-            return user;
-          }
-          
-        }),
-        delay(1500),
-        tap(() => this.navigateTo('/home'))
-      );
+    return this.http.post(`${environment.apiUrl}/signin`, userData).pipe(
+      map((user: any) => {
+        this.successMessage$.next('Accesso effettuato con successo');
+        localStorage.setItem(this.localStorageKey, 'true');
+        localStorage.setItem('idUtente', user.toString());
+        this.startLogoutTimer();
+      }),
+      delay(1500),
+      tap(() => this.navigateTo('/home'))
+    );
   }
 
   getCurrentUserData(): Observable<any> {
