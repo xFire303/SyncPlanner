@@ -69,12 +69,18 @@ public class UserController {
         if (user.isPresent()) {
             return ResponseEntity.ok(user.get().getId());
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email o password non validi");
         }
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/user/{id}")
     public Optional<UserModel> getUserById(@PathVariable("id") Long id) {
         return userService.getUserById(id);
     }
+
+    @GetMapping("/user/{id}/roles")
+    public List<UserSedeRoleModel> getUserRoles(@PathVariable("id") Long id) {
+        return userSedeRoleService.getUserSediRole(id);
+    }
+
 }

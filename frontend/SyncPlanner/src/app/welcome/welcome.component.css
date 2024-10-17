@@ -11,6 +11,10 @@
     color: white;
 }
 
+#logo {
+    filter: drop-shadow(2px 4px 6px rgba(253, 252, 252, 0.7));
+}
+
 @keyframes colorChange {
     0% {
         color: #FF8A00;

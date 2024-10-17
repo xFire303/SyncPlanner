@@ -14,7 +14,7 @@ import { UserService } from '../services/user.service';
 export class FiltroComponent implements OnInit {
   @Output() closeFiltro = new EventEmitter<void>();
 
-  currentUser: any;
+  currentUserSedi: any;
 
   constructor(
     private filtroService: FiltroService,
@@ -22,8 +22,8 @@ export class FiltroComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.getCurrentUserData().subscribe((user) => {
-      this.currentUser = user;
+    this.userService.getCurrentUserSediRole().subscribe((sediRole) => {
+      this.currentUserSedi = sediRole.map((sediRole: any) => sediRole.sede.name);
     });
   }
 
@@ -45,15 +45,7 @@ export class FiltroComponent implements OnInit {
     this.chiudi();
   }
 
-  checkSede(sede: string) {
-    if (
-      this.currentUser?.ruoli_sede.some(
-        (ruolo: any) => ruolo.sede_nome === sede
-      )
-    ) {
-      return true;
-    }
-
-    return false;
+  checkSede(sede: string): boolean {
+    return this.currentUserSedi?.includes(sede) ?? false;
   }
 }

@@ -54,29 +54,32 @@ export class CalendarioComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getCurrentUserData().subscribe((user) => {
       this.currentUser = user;
-      this.sediUtente = user.ruoli_sede.map((ruolo: any) => ruolo.sede_nome);
 
-      this.ruoliCurrentUser = user.ruoli_sede.map(
-        (ruoloSede: any) => ruoloSede.ruolo_nome
-      );
+      this.userService.getCurrentUserSediRole().subscribe((sediRole) => {
+        this.sediUtente = sediRole.map((sediRole: any) => sediRole.sede.name);
 
-      this.sediUtenteRoles = user.ruoli_sede
-        .filter((ruolo: any) => ruolo.ruolo_nome === 'admin')
-        .map((ruolo: any) => ruolo.sede_nome);
+        this.ruoliCurrentUser = sediRole.map(
+          (sediRole: any) => sediRole.role.name
+        );
 
-      this.prenotazioniService
-        .getAllPrenotazioni()
-        .subscribe((prenotazioni) => {
-          this.prenotazioniList = prenotazioni.filter((prenotazione) =>
-            this.sediUtente.includes(prenotazione.sede)
-          );
-          this.filteredPrenotazioniList = this.prenotazioniList;
-          this.updateCalendarEvents();
-        });
-    });
+        this.sediUtenteRoles = sediRole
+          .filter((sediRole: any) => sediRole.role.name === 'admin')
+          .map((sediRole: any) => sediRole.sede.name);
 
-    this.filtroService.filtroOptions$.subscribe((filterOptions) => {
-      this.applyFilter(filterOptions);
+        this.prenotazioniService
+          .getAllPrenotazioni()
+          .subscribe((prenotazioni: any) => {
+            this.prenotazioniList = prenotazioni.filter((prenotazione: any) =>
+              this.sediUtente.includes(prenotazione.sede.name)
+            );
+            this.filteredPrenotazioniList = this.prenotazioniList;
+            this.updateCalendarEvents();
+          });
+      });
+
+      this.filtroService.filtroOptions$.subscribe((filterOptions) => {
+        this.applyFilter(filterOptions);
+      });
     });
   }
 

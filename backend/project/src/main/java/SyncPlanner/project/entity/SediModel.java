@@ -1,5 +1,6 @@
 package SyncPlanner.project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class SediModel {
     @Column(name = "name")
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "sede")
     private Set<UserSedeRoleModel> userSedeRoles = new HashSet<>();
 }

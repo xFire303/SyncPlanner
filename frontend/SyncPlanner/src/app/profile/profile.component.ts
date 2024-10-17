@@ -13,13 +13,13 @@ import { NavbarComponent } from '../navbar/navbar.component';
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
-  currentUser: any;
+  currentUserSediRole: any;
 
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    this.userService.getCurrentUserData().subscribe((user) => {
-      this.currentUser = user;
+    this.userService.getCurrentUserSediRole().subscribe((sediRole) => {
+      this.currentUserSediRole = sediRole.map((sediRole: any) => sediRole.role.name);
     });
   }
 
@@ -27,15 +27,7 @@ export class ProfileComponent implements OnInit {
     this.userService.logout();
   }
 
-  checkRuolo(ruolo_nome: string) {
-    if (
-      this.currentUser?.ruoli_sede.some(
-        (ruolo: any) => ruolo.ruolo_nome === ruolo_nome
-      )
-    ) {
-      return true;
-    }
-
-    return false;
+  checkRuolo(ruolo_nome: string): boolean {
+    return this.currentUserSediRole?.includes(ruolo_nome) ?? false;
   }
 }

@@ -5,7 +5,7 @@
       <i class="fas fa-times"></i>
     </button>
     <form [formGroup]="filtroForm" (ngSubmit)="submitForm()">
-      @if(checkSede('Verona')){
+      @if(checkSede('verona')){
       <div class="form-check">
         <input
           class="form-check-input"
@@ -18,7 +18,7 @@
           Sede Verona
         </label>
       </div>
-      } @if(checkSede('Padova')){
+      } @if(checkSede('padova')){
 
       <div class="form-check">
         <input
@@ -32,7 +32,7 @@
           Sede Padova
         </label>
       </div>
-      } @if(checkSede('Milano')){
+      } @if(checkSede('milano')){
 
       <div class="form-check">
         <input
@@ -46,7 +46,7 @@
           Sede Milano
         </label>
       </div>
-      } @if(checkSede('Como')){
+      } @if(checkSede('como')){
       <div class="form-check">
         <input
           class="form-check-input"
@@ -60,7 +60,7 @@
         </label>
       </div>
 
-      } @if (checkSede('Napoli')) {
+      } @if (checkSede('napoli')) {
       <div class="form-check">
         <input
           class="form-check-input"
@@ -74,7 +74,7 @@
         </label>
       </div>
 
-      } @if (checkSede('Roma')) {
+      } @if (checkSede('roma')) {
       <div class="form-check">
         <input
           class="form-check-input"

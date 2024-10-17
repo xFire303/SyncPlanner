@@ -84,13 +84,23 @@ export class UserService {
         this.startLogoutTimer();
       }),
       delay(1500),
-      tap(() => this.navigateTo('/home'))
+      tap(() => this.navigateTo('/home')),
+      catchError((error) => {
+        this.errorMessage$.next(error.error);;
+        return throwError(() => error);
+      })
     );
   }
 
   getCurrentUserData(): Observable<any> {
     return this.http.get<any>(
-      `${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`
+      `${environment.apiUrl}/user/${localStorage.getItem('idUtente')}`
+    );
+  }
+
+  getCurrentUserSediRole(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/user/${localStorage.getItem('idUtente')}/roles`
     );
   }
 
