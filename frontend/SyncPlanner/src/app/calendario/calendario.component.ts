@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { RouterOutlet, RouterModule } from '@angular/router';
 
@@ -19,6 +19,7 @@ import { UserService } from '../services/user.service';
 import itLocale from '@fullcalendar/core/locales/it';
 import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import { VisualizzaPrenotazioneComponent } from '../visualizza-prenotazione/visualizza-prenotazione.component';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-calendario',
@@ -56,34 +57,35 @@ export class CalendarioComponent implements OnInit {
   }
 
   updatePrenotazioni() {
-    this.userService.getCurrentUserData().subscribe((user) => {
-      this.currentUser = user;
+    this.userService
+      .getCurrentUserData()
+      .pipe(
+        switchMap((user) => {
+          this.currentUser = user;
+          return this.userService.getCurrentUserSediRole();
+        }),
+        switchMap((sediRole) => {
+          this.sediUtente = sediRole.map((sediRole: any) => sediRole.sede.name);
+          this.ruoliCurrentUser = sediRole.map(
+            (sediRole: any) => sediRole.role.name
+          );
+          this.sediUtenteRoles = sediRole
+            .filter((sediRole: any) => sediRole.role.name === 'admin')
+            .map((sediRole: any) => sediRole.sede.name);
 
-      this.userService.getCurrentUserSediRole().subscribe((sediRole) => {
-        this.sediUtente = sediRole.map((sediRole: any) => sediRole.sede.name);
-
-        this.ruoliCurrentUser = sediRole.map(
-          (sediRole: any) => sediRole.role.name
+          return this.prenotazioniService.getAllPrenotazioni();
+        })
+      )
+      .subscribe((prenotazioni: any) => {
+        this.prenotazioniList = prenotazioni.filter((prenotazione: any) =>
+          this.sediUtente.includes(prenotazione.sede.name)
         );
-
-        this.sediUtenteRoles = sediRole
-          .filter((sediRole: any) => sediRole.role.name === 'admin')
-          .map((sediRole: any) => sediRole.sede.name);
-
-        this.prenotazioniService
-          .getAllPrenotazioni()
-          .subscribe((prenotazioni: any) => {
-            this.prenotazioniList = prenotazioni.filter((prenotazione: any) =>
-              this.sediUtente.includes(prenotazione.sede.name)          
-            );
-            this.filteredPrenotazioniList = this.prenotazioniList;
-            this.updateCalendarEvents();
-          });
+        this.filteredPrenotazioniList = this.prenotazioniList;
+        this.updateCalendarEvents();
       });
 
-      this.filtroService.filtroOptions$.subscribe((filterOptions) => {
-        this.applyFilter(filterOptions);
-      });
+    this.filtroService.filtroOptions$.subscribe((filterOptions) => {
+      this.applyFilter(filterOptions);
     });
   }
 
@@ -138,22 +140,13 @@ export class CalendarioComponent implements OnInit {
     );
   }
 
-  refreshPrenotazioni() {
-    this.prenotazioniService.getAllPrenotazioni().subscribe((prenotazioni) => {
-      this.prenotazioniList = prenotazioni.filter((prenotazione) =>
-        this.sediUtente.includes(prenotazione.sede)
-      );
-      this.filteredPrenotazioniList = this.prenotazioniList;
-      this.updateCalendarEvents();
-    });
-  }
-
   apriPrenotazione(arg: any) {
     this.selectedDate = arg.dateStr;
     this.showAddPrenotazione = true;
   }
 
   apriGestisciPrenotazione(arg: any) {
+    this.showVisualizzaPrenotazione = false;
     if (
       this.checkSediRoles(arg.event.extendedProps.sede) ||
       this.currentUser.username === arg.event.title
@@ -184,7 +177,7 @@ export class CalendarioComponent implements OnInit {
 
   chiudiGestisciPrenotazione() {
     this.showGestisciPrenotazione = false;
-    this.refreshPrenotazioni();
+    this.updatePrenotazioni();
   }
 
   chiudiLeggenda() {
@@ -221,12 +214,10 @@ export class CalendarioComponent implements OnInit {
         textColor: 'black',
       })
     );
-
-    this.updatePrenotazioni();
   }
 
   onPrenotazioneAggiunta() {
-    this.updateCalendarEvents();
+    this.updatePrenotazioni();
   }
 
   filtro() {
@@ -241,7 +232,7 @@ export class CalendarioComponent implements OnInit {
       this.filteredPrenotazioniList = this.prenotazioniList;
     } else {
       this.filteredPrenotazioniList = this.prenotazioniList.filter(
-        (prenotazione) => selectedSedi.includes(prenotazione.sede)
+        (prenotazione) => selectedSedi.includes(prenotazione.sede.name)
       );
     }
     this.updateCalendarEvents();

@@ -51,7 +51,7 @@ export class ModificaPrenotazioneComponent {
 
     if (this.showGestisciPrenotazione) {
       this.modPrenotazioneForm.patchValue({
-        'data-prenotazione': this.data,
+        date: this.data,
         utente: this.utente,
         sede: this.sede,
       });
@@ -64,7 +64,7 @@ export class ModificaPrenotazioneComponent {
           );
 
           this.modPrenotazioneForm.patchValue({
-            'data-prenotazione': prenotazione.data,
+            date: prenotazione.data,
             utente: prenotazione.utente,
             sede: prenotazione.sede,
           });
@@ -73,7 +73,7 @@ export class ModificaPrenotazioneComponent {
   }
 
   modPrenotazioneForm = new FormGroup({
-    'data-prenotazione': new FormControl<string>('', Validators.required),
+    date: new FormControl<string>('', Validators.required),
     utente: new FormControl<string>('', Validators.required),
     sede: new FormControl<string>('', Validators.required),
   });
@@ -86,6 +86,14 @@ export class ModificaPrenotazioneComponent {
   chiudiGestisciPrenotazione() {
     this.idStateService.clearSelectedPrenotazioneId();
     this.closeGestisciPrenotazione.emit();
+  }
+
+  modificaPrenotazione() {
+    this.prenotazioniService
+      .updatePrenotazione(+this.id, this.modPrenotazioneForm.value)
+      .subscribe(() => {
+        this.chiudiGestisciPrenotazione();
+      });
   }
 
   elimina() {

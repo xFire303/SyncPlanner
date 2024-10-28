@@ -27,7 +27,7 @@
           type="date"
           [required]="true"
           pInputText
-          formControlName="data-prenotazione"
+          formControlName="date"
           placeholder="Data prenotazione"
           (ngModelChange)="
             modPrenotazioneForm.get('data-prenotazione')?.markAsTouched()
@@ -44,6 +44,7 @@
           class="btn btn-success"
           value="Salva modifiche"
           [disabled]="modPrenotazioneForm.invalid"
+          (click)="modificaPrenotazione()"
         />
 
         @if(!showGestisciPrenotazione){

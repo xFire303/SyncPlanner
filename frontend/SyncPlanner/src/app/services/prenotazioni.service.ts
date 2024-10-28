@@ -19,6 +19,10 @@ export class PrenotazioniService {
     return this.http.get<any[]>(`${environment.apiUrl}/bookings`);
   }
 
+  getPrenotazione(id: number): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/bookings/${id}`);
+  }
+
   createPrenotazione(prenotazione: any): Observable<any> {
     return this.http.post<any>(
       `${environment.apiUrl}/bookings`,
@@ -26,9 +30,9 @@ export class PrenotazioniService {
     );
   }
 
-  updatePrenotazione(prenotazione: any): Observable<any> {
-    return this.http.put<any>(
-      `${environment.apiUrl}/bookings/${prenotazione.id}`,
+  updatePrenotazione(id: number, prenotazione: any): Observable<any> {
+    return this.http.patch<any>(
+      `${environment.apiUrl}/bookings/${id}`,
       prenotazione
     );
   }
@@ -38,8 +42,4 @@ export class PrenotazioniService {
       `${environment.apiUrl}/bookings/${prenotazioneId}`
     );
   }
-
-  // deleteUtenteDallaPrenotazione(prenotazioneId: number, utente: any): Observable<any> {
-  //   return this.http.delete<any>(`${environment.apiUrl}/prenotazioni/${prenotazioneId}`, { partecipanti: utente });
-  // }
 }

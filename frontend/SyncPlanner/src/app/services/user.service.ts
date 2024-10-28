@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, timer, throwError, from, of } from 'rxjs';
+import { Observable, Subject, timer, throwError, of } from 'rxjs';
 import {
   map,
   takeUntil,
-  switchMap,
   tap,
   delay,
   catchError,
@@ -142,5 +141,9 @@ export class UserService {
         userData
       )
       .pipe(tap(() => this.navigateTo('/profile/gestisci-profilo')));
+  }
+
+  getUserId(): string {
+    return localStorage.getItem('idUtente') || '';
   }
 }

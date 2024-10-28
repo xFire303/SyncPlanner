@@ -28,12 +28,12 @@ export class FiltroComponent implements OnInit {
   }
 
   filtroForm = new FormGroup({
-    Verona: new FormControl(false),
-    Padova: new FormControl(false),
-    Milano: new FormControl(false),
-    Como: new FormControl(false),
-    Napoli: new FormControl(false),
-    Roma: new FormControl(false),
+    verona: new FormControl(false),
+    padova: new FormControl(false),
+    milano: new FormControl(false),
+    como: new FormControl(false),
+    napoli: new FormControl(false),
+    roma: new FormControl(false),
   });
 
   chiudi() {

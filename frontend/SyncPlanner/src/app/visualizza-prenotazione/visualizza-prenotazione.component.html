@@ -24,22 +24,33 @@
         } -->
       </div>
     </div>
-    @if(!seiGiaPartecipante){
-        <div class="input-box button">
-          <input
-            type="submit"
-            value="Partecipa alla prenotazione"
-            (click)="aggiungitiAllaPrenotazione()"
-          />
-        </div>    
-    }@else{
-        <div class="input-box button">
+    @if(!proprietarioPrenotazione){
+      @if(!seiGiaPartecipante){
+          <div class="input-box button">
             <input
               type="submit"
-              value="Rimuoviti dalla prenotazione"
-              (click)="rimuovitiDallaPrenotazione()"
+              value="Partecipa alla prenotazione"
+              (click)="aggiungitiAllaPrenotazione()"
             />
           </div>    
+      }@else{
+          <div class="input-box button">
+              <input
+                type="submit"
+                value="Rimuoviti dalla prenotazione"
+                (click)="rimuovitiDallaPrenotazione()"
+              />
+            </div>    
+      }
+    }
+    @else{
+      <div class="input-box button">
+        <input
+          type="submit"
+          value="Modifica prenotazione"
+          (click)="modificaPrenotazione()"
+        />
+      </div>
     }
   </div>
 </div>

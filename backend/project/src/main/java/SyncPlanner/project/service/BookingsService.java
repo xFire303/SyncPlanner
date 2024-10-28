@@ -1,6 +1,7 @@
 package SyncPlanner.project.service;
 
 import SyncPlanner.project.dto.BookingsRequest;
+import SyncPlanner.project.dto.UpdateBooking;
 import SyncPlanner.project.entity.BookingsModel;
 import SyncPlanner.project.entity.SediModel;
 import SyncPlanner.project.entity.UserModel;
@@ -50,5 +51,23 @@ public class BookingsService {
         booking.setSede(sede);
 
         bookingsRepo.save(booking);
+    }
+
+    public Optional<BookingsModel> getBookingById(Integer id) {
+        return bookingsRepo.findById(id);
+    }
+
+    public void updateBooking(Integer id, UpdateBooking updateBooking) {
+        Optional<BookingsModel> bookingOptional = bookingsRepo.findById(id);
+        if (bookingOptional.isEmpty()) {
+            throw new RuntimeException("Booking not found");
+        }
+        BookingsModel booking = bookingOptional.get();
+        booking.setDate(updateBooking.getDate());
+        bookingsRepo.save(booking);
+    }
+
+    public void deleteBooking(Integer id) {
+        bookingsRepo.deleteById(id);
     }
 }
