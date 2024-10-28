@@ -21,8 +21,6 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
 
   @Output() close = new EventEmitter();
 
-  partecipante: any;
-  partecipanti: any[] = [];
   seiGiaPartecipante: boolean = false;
 
   constructor(
@@ -32,16 +30,7 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
 
   ngOnInit(): void {
     this.prenotazioneService.getAllPrenotazioni().subscribe((prenotazioni) => {
-      console.log("partecipanti", this.partecipanti);
-      this.userService.getCurrentUserData().subscribe((user) => {
-        this.partecipante = {
-          username: user.username,
-        };
-
-        this.prenotazioneService
-          .checkSeiGiaPartecipante(+this.id, this.partecipante)
-          .subscribe();
-      });
+      
 
     });
   }
@@ -51,9 +40,9 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
   }
 
   aggiungitiAllaPrenotazione() {
-    this.prenotazioneService
-      .addUtenteAllaPrenotazione(+this.id, this.partecipante!)
-      .subscribe();
+    // this.prenotazioneService
+    //   .addUtenteAllaPrenotazione(+this.id, this.partecipante!)
+    //   .subscribe();
   }
 
   rimuovitiDallaPrenotazione() {

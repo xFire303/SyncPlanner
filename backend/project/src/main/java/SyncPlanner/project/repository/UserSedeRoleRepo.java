@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface UserSedeRoleRepo extends JpaRepository<UserSedeRoleModel, Long> {
     @Query("SELECT u FROM UserSedeRoleModel u WHERE u.user.id = :userId")
-    List<UserSedeRoleModel> getUserSediRole(Long userId);
+    List<UserSedeRoleModel> getUserSediRole(Integer userId);
 }

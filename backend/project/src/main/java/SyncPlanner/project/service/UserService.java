@@ -1,5 +1,6 @@
 package SyncPlanner.project.service;
 
+import SyncPlanner.project.dto.UserUpdateProfile;
 import SyncPlanner.project.entity.UserModel;
 import SyncPlanner.project.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,18 @@ public class UserService {
         return username;
     }
 
-    public Optional<UserModel> getUserById(Long id) {
+    public Optional<UserModel> getUserById(Integer id) {
         return userRepository.findById(id);
+    }
+
+    public void updateUser(Integer id, UserUpdateProfile userUpdateProfile) {
+        UserModel existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (userUpdateProfile.getPassword() != null) {
+            existingUser.setPassword(userUpdateProfile.getPassword());
+        }
+
+        userRepository.save(existingUser);
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SediRepo extends JpaRepository<SediModel, Long> {
+public interface SediRepo extends JpaRepository<SediModel, Integer> {
 
     Optional<SediModel> findByName(String name);
 }

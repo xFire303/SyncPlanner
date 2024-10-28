@@ -17,6 +17,7 @@ import { UserService } from '../../services/user.service';
 export class GestisciPrenotazioniComponent implements OnInit {
   prenotazioni: any[] = [];
   utenteSediAdmin: string[] = [];
+  currentUserSediRole: any;
   currentUser: any;
 
   constructor(
@@ -29,10 +30,14 @@ export class GestisciPrenotazioniComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getCurrentUserData().subscribe((user) => {
       this.currentUser = user;
+    });
+    
+    this.userService.getCurrentUserSediRole().subscribe((sediRole) => {
+      this.currentUserSediRole = sediRole;
 
-      this.utenteSediAdmin = this.currentUser.ruoli_sede
-        .filter((ruoloSede: any) => ruoloSede.ruolo_nome === 'admin')
-        .map((ruoloSede: any) => ruoloSede.sede_nome);
+      this.utenteSediAdmin = sediRole
+        .filter((sediRole: any) => sediRole.role.name === 'admin')
+        .map((sediRole: any) => sediRole.sede.name);
 
       this.loadPrenotazioni();
     });

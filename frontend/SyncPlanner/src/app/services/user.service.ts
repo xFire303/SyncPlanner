@@ -138,7 +138,7 @@ export class UserService {
 
     return this.http
       .patch(
-        `${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`,
+        `${environment.apiUrl}/user/${localStorage.getItem('idUtente')}`,
         userData
       )
       .pipe(tap(() => this.navigateTo('/profile/gestisci-profilo')));

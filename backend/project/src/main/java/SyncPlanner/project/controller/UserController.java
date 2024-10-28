@@ -2,6 +2,7 @@ package SyncPlanner.project.controller;
 
 import SyncPlanner.project.dto.UserLoginRequest;
 import SyncPlanner.project.dto.UserRegistration;
+import SyncPlanner.project.dto.UserUpdateProfile;
 import SyncPlanner.project.entity.RolesModel;
 import SyncPlanner.project.entity.SediModel;
 import SyncPlanner.project.entity.UserModel;
@@ -74,13 +75,18 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public Optional<UserModel> getUserById(@PathVariable("id") Long id) {
+    public Optional<UserModel> getUserById(@PathVariable("id") Integer id) {
         return userService.getUserById(id);
     }
 
     @GetMapping("/user/{id}/roles")
-    public List<UserSedeRoleModel> getUserRoles(@PathVariable("id") Long id) {
+    public List<UserSedeRoleModel> getUserRoles(@PathVariable("id") Integer id) {
         return userSedeRoleService.getUserSediRole(id);
     }
 
+    @PatchMapping("/user/{id}")
+    public ResponseEntity<Void> updateUser(@PathVariable("id") Integer id, @RequestBody UserUpdateProfile user) {
+        userService.updateUser(id, user);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

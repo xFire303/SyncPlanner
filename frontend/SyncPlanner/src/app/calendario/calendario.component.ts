@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 
 import { RouterOutlet, RouterModule } from '@angular/router';
 
@@ -52,6 +52,10 @@ export class CalendarioComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.updatePrenotazioni();
+  }
+
+  updatePrenotazioni() {
     this.userService.getCurrentUserData().subscribe((user) => {
       this.currentUser = user;
 
@@ -70,7 +74,7 @@ export class CalendarioComponent implements OnInit {
           .getAllPrenotazioni()
           .subscribe((prenotazioni: any) => {
             this.prenotazioniList = prenotazioni.filter((prenotazione: any) =>
-              this.sediUtente.includes(prenotazione.sede.name)
+              this.sediUtente.includes(prenotazione.sede.name)          
             );
             this.filteredPrenotazioniList = this.prenotazioniList;
             this.updateCalendarEvents();
@@ -197,30 +201,31 @@ export class CalendarioComponent implements OnInit {
 
   updateCalendarEvents() {
     const sedeColorMap: any = {
-      Verona: '#ff8a00',
-      Milano: '#8a00ff',
-      Padova: '#00ff8a',
-      Napoli: '#ff008a',
-      Como: '#4000ff',
-      Roma: '#ff001e',
+      verona: '#ff8a00',
+      milano: '#8a00ff',
+      padova: '#00ff8a',
+      napoli: '#ff008a',
+      como: '#4000ff',
+      roma: '#ff001e',
     };
 
     this.calendarOptions.events = this.filteredPrenotazioniList.map(
       (prenotazione) => ({
         id: prenotazione.id,
-        title: prenotazione.utente,
-        start: prenotazione.data,
+        title: prenotazione.user.username,
+        start: prenotazione.date,
         extendedProps: {
-          sede: prenotazione.sede,
+          sede: prenotazione.sede.name,
         },
-        color: sedeColorMap[prenotazione.sede],
+        color: sedeColorMap[prenotazione.sede.name],
         textColor: 'black',
       })
     );
+
+    this.updatePrenotazioni();
   }
 
-  onPrenotazioneAggiunta(prenotazione: any) {
-    this.prenotazioniList.push(prenotazione);
+  onPrenotazioneAggiunta() {
     this.updateCalendarEvents();
   }
 

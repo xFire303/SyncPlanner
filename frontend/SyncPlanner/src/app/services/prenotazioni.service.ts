@@ -39,47 +39,6 @@ export class PrenotazioniService {
     );
   }
 
-  checkSeiGiaPartecipante(
-    prenotazioneId: number,
-    utente: any
-  ): Observable<boolean> {
-    return this.http
-      .get<any>(`${environment.apiUrl}/bookings/${prenotazioneId}`)
-      .pipe(
-        switchMap((prenotazione) => {
-          const isPartecipante = prenotazione.partecipanti.includes(utente);
-          return of(isPartecipante);
-        })
-      );
-  }
-
-  addUtenteAllaPrenotazione(
-    prenotazioneId: number,
-    utente: any
-  ): Observable<any> {
-    return this.checkSeiGiaPartecipante(prenotazioneId, utente).pipe(
-      switchMap((isPartecipante) => {
-        if (isPartecipante) {
-          this.seiGiaPartecipante$.next(true);
-          return of(null);
-        } else {
-          this.seiGiaPartecipante$.next(false);
-          return this.http
-            .get<any>(`${environment.apiUrl}/bookings/${prenotazioneId}`)
-            .pipe(
-              switchMap((prenotazione) => {
-                prenotazione.partecipanti.push(utente);
-                return this.http.patch<any>(
-                  `${environment.apiUrl}/bookings/${prenotazioneId}`,
-                  { partecipanti: prenotazione.partecipanti }
-                );
-              })
-            );
-        }
-      })
-    );
-  }
-
   // deleteUtenteDallaPrenotazione(prenotazioneId: number, utente: any): Observable<any> {
   //   return this.http.delete<any>(`${environment.apiUrl}/prenotazioni/${prenotazioneId}`, { partecipanti: utente });
   // }

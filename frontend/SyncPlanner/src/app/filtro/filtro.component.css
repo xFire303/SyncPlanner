@@ -20,6 +20,7 @@
   font-size: 22px;
   font-weight: 600;
   color: #333;
+  margin-bottom: 1rem;
 }
 
 .wrapper h2::before {

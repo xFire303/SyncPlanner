@@ -21,7 +21,7 @@ import { UserService } from '../services/user.service';
     ReactiveFormsModule,
     InputTextModule,
     InputGroupModule,
-    InputGroupAddonModule
+    InputGroupAddonModule,
   ],
   templateUrl: './add-prenotazione.component.html',
   styleUrl: './add-prenotazione.component.css',
@@ -40,28 +40,28 @@ export class AddPrenotazioneComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.getCurrentUserData().subscribe((user) => {
-      this.currentUser = user.username;
+    this.userService.getCurrentUserSediRole().subscribe((sediRole) => {
+      this.userService.getCurrentUserData().subscribe((user) => {
+        this.currentUser = user.username;
 
-      this.addPrenotazioneForm.patchValue({
-        data: this.data,
-        sede: 'Sedi',
-        utente: this.currentUser,
+        this.addPrenotazioneForm.patchValue({
+          date: this.data,
+          sedeName: 'Sedi',
+          userUsername: this.currentUser,
+        });
+
+        this.currentSedi = sediRole
+          .filter((sediRole: any) => sediRole.role.name === 'admin' || sediRole.role.name === 'keyOwner')
+          .map((sediRole: any) => sediRole.sede.name);
+
       });
-
-      this.currentSedi = user.ruoli_sede
-        .filter(
-          (ruolo: any) =>
-            ruolo.ruolo_nome === 'admin' || ruolo.ruolo_nome === 'keyOwner'
-        )
-        .map((ruolo: any) => ruolo.sede_nome);
     });
   }
 
   addPrenotazioneForm = new FormGroup({
-    data: new FormControl('', [Validators.required]),
-    utente: new FormControl('', [Validators.required]),
-    sede: new FormControl('', [Validators.required]),
+    date: new FormControl('', [Validators.required]),
+    userUsername: new FormControl('', [Validators.required]),
+    sedeName: new FormControl('', [Validators.required]),
   });
 
   isDefaultSedeSelected(): boolean {
@@ -71,8 +71,7 @@ export class AddPrenotazioneComponent implements OnInit {
   submitForm() {
     if (this.addPrenotazioneForm.valid && !this.isDefaultSedeSelected()) {
       const prenotazione = {
-        ...this.addPrenotazioneForm.value,
-        partecipanti: []
+        ...this.addPrenotazioneForm.value
       };
 
       this.prenotazioniService
