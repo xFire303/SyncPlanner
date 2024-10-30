@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "bookings")
+@Table(name = "bookingsParticipant")
 public class BookingParticipantsModel {
 
     @Id
@@ -22,10 +22,10 @@ public class BookingParticipantsModel {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private UserModel user;
 
     @ManyToOne
-    @JoinColumn(name = "booking_id", nullable = false)
+    @JoinColumn(name = "bookingId", nullable = false)
     private BookingsModel booking;
 }

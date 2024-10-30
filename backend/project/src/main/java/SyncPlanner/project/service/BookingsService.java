@@ -5,6 +5,7 @@ import SyncPlanner.project.dto.UpdateBooking;
 import SyncPlanner.project.entity.BookingsModel;
 import SyncPlanner.project.entity.SediModel;
 import SyncPlanner.project.entity.UserModel;
+import SyncPlanner.project.repository.BookingParticipantsRepo;
 import SyncPlanner.project.repository.BookingsRepo;
 import SyncPlanner.project.repository.SediRepo;
 import SyncPlanner.project.repository.UserRepo;
@@ -25,6 +26,9 @@ public class BookingsService {
 
     @Autowired
     private SediRepo sedeRepo;
+
+    @Autowired
+    private BookingParticipantsRepo bookingParticipantsRepo;
 
     public List<BookingsModel> getBookings() {
         return bookingsRepo.findAll();
@@ -68,6 +72,7 @@ public class BookingsService {
     }
 
     public void deleteBooking(Integer id) {
+        bookingParticipantsRepo.deleteByBookingId(id);
         bookingsRepo.deleteById(id);
     }
 }

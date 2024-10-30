@@ -7,10 +7,12 @@ import { PrenotazioniService } from '../../services/prenotazioni.service';
 import { idStateService } from '../../services/id-state.service';
 import { UserService } from '../../services/user.service';
 
+import { CapitalizePipe } from '../../pipes/capitalize.pipe';
+
 @Component({
   selector: 'app-gestisci-prenotazioni',
   standalone: true,
-  imports: [RouterOutlet, RouterModule],
+  imports: [RouterOutlet, RouterModule, CapitalizePipe],
   templateUrl: './gestisci-prenotazioni.component.html',
   styleUrl: './gestisci-prenotazioni.component.css',
 })
@@ -47,10 +49,10 @@ export class GestisciPrenotazioniComponent implements OnInit {
     this.prenotazioniService.getAllPrenotazioni().subscribe((prenotazioni) => {
       this.prenotazioni = prenotazioni
         .filter((prenotazione) => {
-          const isAdminSede = this.utenteSediAdmin.includes(prenotazione.sede);
+          const isAdminSede = this.utenteSediAdmin.includes(prenotazione.sede.name);
 
           const isUserPrenotazione =
-            prenotazione.utente === this.currentUser.username;
+            prenotazione.user.username === this.currentUser.username;
           return isAdminSede || isUserPrenotazione;
         })
         .sort((a, b) => {

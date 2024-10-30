@@ -65,11 +65,11 @@ export class AddPrenotazioneComponent implements OnInit {
   });
 
   isDefaultSedeSelected(): boolean {
-    return this.addPrenotazioneForm.get('sede')?.value === 'Sedi';
+    return this.addPrenotazioneForm.get('sedeName')?.value === 'Sedi';
   }
 
   submitForm() {
-    if (this.addPrenotazioneForm.valid && !this.isDefaultSedeSelected()) {
+    if (this.addPrenotazioneForm.valid) {
       const prenotazione = {
         ...this.addPrenotazioneForm.value
       };

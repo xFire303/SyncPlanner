@@ -5,14 +5,17 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { UserService } from '../services/user.service';
 import { PrenotazioniService } from '../services/prenotazioni.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 import { Router } from '@angular/router';
 import { PartecipantiService } from '../services/partecipanti.service';
 
+import { CapitalizePipe } from '../pipes/capitalize.pipe';
+
 @Component({
   selector: 'app-visualizza-prenotazione',
   standalone: true,
-  imports: [InputTextModule, InputGroupModule, InputGroupAddonModule],
+  imports: [InputTextModule, InputGroupModule, InputGroupAddonModule, FloatLabelModule, CapitalizePipe],
   templateUrl: './visualizza-prenotazione.component.html',
   styleUrl: './visualizza-prenotazione.component.css',
 })
@@ -25,9 +28,14 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
   @Output() close = new EventEmitter();
   @Output() apriGestisciPrenotazione = new EventEmitter();
 
+  partecipantiList: string[] = [];
+
   seiGiaPartecipante: boolean = false;
   proprietarioPrenotazione: boolean = false;
   idStateService: any;
+
+  CurrentUserUsername: string = '';
+  isDataLoaded: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -45,7 +53,26 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
         } else {
           this.proprietarioPrenotazione = false;
         }
+
+        this.partecipantiService
+          .getPartecipantiByprenotazione(+this.id)
+          .subscribe((partecipanti) => {
+            partecipanti.forEach((element: { user: { username: string; }; }) => {
+              this.partecipantiList.push(element.user.username);
+            });
+
+            this.userService.getCurrentUserData().subscribe((user) => {
+              this.CurrentUserUsername = user.username;
+  
+              if(this.partecipantiList?.includes(this.CurrentUserUsername)) {
+                this.seiGiaPartecipante = true;
+              }
+
+              this.isDataLoaded = true;
+            })
+          })
       });
+
   }
 
   chiudi() {
@@ -68,15 +95,18 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
   }
 
   aggiungitiAllaPrenotazione() {
-    console.log('partecipante ' + this.userService.getUserId() + ' prenotazione ' + this.id);
     this.partecipantiService
       .aggiungiPartecipante(+this.userService.getUserId(), +this.id)
-      .subscribe();
+      .subscribe(() => {
+        this.close.emit();
+      });
   }
 
   rimuovitiDallaPrenotazione() {
-    // this.prenotazioneService
-    //   .deleteUtenteDallaPrenotazione(+this.id, this.partecipante!)
-    //   .subscribe();
+    this.partecipantiService
+      .deletePartecipanteByPrenotazione(+this.id, +this.userService.getUserId())
+      .subscribe(() => {
+        this.close.emit();
+      });
   }
 }

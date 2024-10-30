@@ -4,9 +4,9 @@
     @for(prenotazione of prenotazioni; track prenotazione.id) {
     <div class="prenotazione-item">
       <div class="detail"><strong>ID prenotazione: </strong>{{prenotazione.id}}</div>
-      <div class="detail"><strong>Utente: </strong>{{prenotazione.utente}}</div>
-      <div class="detail"><strong>Data Prenotazione: </strong>{{prenotazione.data}}</div>
-      <div class="detail"><strong>Sede: </strong>{{prenotazione.sede}}</div>
+      <div class="detail"><strong>Utente: </strong>{{prenotazione.user.username}}</div>
+      <div class="detail"><strong>Data Prenotazione: </strong>{{prenotazione.date}}</div>
+      <div class="detail"><strong>Sede: </strong>{{prenotazione.sede.name | capitalize}}</div>
       <div class="buttons">
         <button
           (click)="modificaPrenotazione(prenotazione.id)"

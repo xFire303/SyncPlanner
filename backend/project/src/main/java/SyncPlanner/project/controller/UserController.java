@@ -89,4 +89,9 @@ public class UserController {
         userService.updateUser(id, user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @GetMapping("/users")
+    public List<UserSedeRoleModel> getUsers() {
+        return userSedeRoleService.getUsers();
+    }
 }
