@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserSedeRoleRepo extends JpaRepository<UserSedeRoleModel, Long> {
+public interface UserSedeRoleRepo extends JpaRepository<UserSedeRoleModel, Integer> {
     @Query("SELECT u FROM UserSedeRoleModel u WHERE u.user.id = :userId")
     List<UserSedeRoleModel> getUserSediRole(Integer userId);
 }

@@ -6,6 +6,8 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 import { PrenotazioniService } from '../services/prenotazioni.service';
 
+import { CapitalizePipe } from '../pipes/capitalize.pipe';
+
 import {
   ReactiveFormsModule,
   FormControl,
@@ -22,6 +24,7 @@ import { UserService } from '../services/user.service';
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
+    CapitalizePipe
   ],
   templateUrl: './add-prenotazione.component.html',
   styleUrl: './add-prenotazione.component.css',

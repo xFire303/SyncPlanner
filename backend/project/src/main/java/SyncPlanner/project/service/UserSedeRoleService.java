@@ -1,6 +1,6 @@
 package SyncPlanner.project.service;
 
-import SyncPlanner.project.entity.UserModel;
+import SyncPlanner.project.dto.UpdateUserSediRole;
 import SyncPlanner.project.entity.UserSedeRoleModel;
 import SyncPlanner.project.repository.UserSedeRoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +23,10 @@ public class UserSedeRoleService {
 
     public List<UserSedeRoleModel> getUsers() {
         return userSedeRoleRepo.findAll();
+    }
+
+    public void updateUserSedeRole(Integer id, UpdateUserSediRole userSedeRole) {
+
+//        userSedeRoleRepo.save(userSedeRole);
     }
 }

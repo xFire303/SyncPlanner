@@ -1,5 +1,6 @@
 package SyncPlanner.project.controller;
 
+import SyncPlanner.project.dto.UpdateUserSediRole;
 import SyncPlanner.project.dto.UserLoginRequest;
 import SyncPlanner.project.dto.UserRegistration;
 import SyncPlanner.project.dto.UserUpdateProfile;
@@ -93,5 +94,11 @@ public class UserController {
     @GetMapping("/users")
     public List<UserSedeRoleModel> getUsers() {
         return userSedeRoleService.getUsers();
+    }
+
+    @PatchMapping("/user/{id}/roles")
+    public ResponseEntity<Void> updateUserRoles(@PathVariable("id") Integer id, @RequestBody UpdateUserSediRole userSedeRole) {
+        userSedeRoleService.updateUserSedeRole(id, userSedeRole);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -76,8 +76,8 @@ export class GestisciPrenotazioniComponent implements OnInit {
     this.prenotazioniService.deletePrenotazione(id).subscribe(() => {
       this.prenotazioniService
         .getAllPrenotazioni()
-        .subscribe((prenotazioni) => {
-          this.prenotazioni = prenotazioni;
+        .subscribe(() => {
+          this.loadPrenotazioni();
         });
     });
   }

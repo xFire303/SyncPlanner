@@ -1,13 +1,15 @@
 <div class="wrapper">
   <h2>Gestisci Utenti</h2>
   <div class="utenti-container">
-    @for(utente of filteredUtenti; track utente.id){
+    @for(utente of ruoliSedeUtentiAggregati; track utente){
     <div class="user-card" (click)="navigateToEditUtente(utente.user.id)">
       <div class="user-name">{{ utente.user.username }}</div>
       <div class="user-roles">
-        <span class="role-tag"
-          >{{ utente.sede.name }} {{ utente.role.name }}</span
-        >
+        @for(ruolo of utente.roles; track ruolo){
+          <span class="role-tag"
+            >{{ ruolo.sedeName }} {{ ruolo.roleName }}</span
+          >
+        }
       </div>
     </div>
     }

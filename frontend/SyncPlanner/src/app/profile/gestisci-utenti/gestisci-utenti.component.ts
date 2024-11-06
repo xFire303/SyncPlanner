@@ -20,6 +20,7 @@ export class GestisciUtentiComponent implements OnInit {
   currentUser: any;
   ruoliSede: any[] = [];
   filteredUtenti: any[] = [];
+  ruoliSedeUtentiAggregati: any[] = [];
 
   constructor(
     private gestisciUtentiService: GestisciUtentiService,
@@ -54,11 +55,22 @@ export class GestisciUtentiComponent implements OnInit {
               }
             });
 
-            this.filteredUtenti = this.utenti.filter((utente: any) => {
-              return adminLocations.includes(utente.sede.name);
+            // Aggrega i ruoli e le sedi per ogni utente
+            const utentiMap = new Map();
+            this.utenti.forEach((utente) => {
+              if (!utentiMap.has(utente.user.id)) {
+                utentiMap.set(utente.user.id, {
+                  user: utente.user,
+                  roles: [],
+                });
+              }
+              utentiMap.get(utente.user.id).roles.push({
+                sedeName: utente.sede.name,
+                roleName: utente.role.name,
+              });
             });
 
-            console.log(this.filteredUtenti);
+            this.ruoliSedeUtentiAggregati = Array.from(utentiMap.values());
           });
         }
       });

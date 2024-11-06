@@ -32,7 +32,7 @@
         >
           <option selected>Sedi</option>
           @for(sede of currentSedi; track sede){
-          <option value="{{sede}}">{{sede}}</option>
+          <option value="{{sede}}">{{sede | capitalize}}</option>
           }
         </select>
       </div>
