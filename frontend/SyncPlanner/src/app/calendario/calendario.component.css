@@ -29,4 +29,16 @@
   .calendar-container {
     padding: 0rem;
   }
+
+  .fc-header-toolbar {
+    flex-direction: column; /* Cambia la disposizione in colonna */
+    align-items: center; /* Centra i bottoni */
+  }
+  .fc-button {
+    width: 100%; /* I bottoni occupano tutta la larghezza disponibile */
+  }
+
+  .modal-content {
+    width: 100%;
+  }
 }

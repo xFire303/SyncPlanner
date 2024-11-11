@@ -105,6 +105,7 @@ export class CalendarioComponent implements OnInit {
     locale: itLocale,
     contentHeight: 'auto',
     height: 'auto',
+    handleWindowResize: true,
     headerToolbar: {
       left: 'Leggenda Filtro',
       center: 'title',

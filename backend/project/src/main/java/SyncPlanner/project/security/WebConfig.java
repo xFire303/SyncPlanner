@@ -1,4 +1,4 @@
-package SyncPlanner.project.config;
+package SyncPlanner.project.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

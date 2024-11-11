@@ -21,11 +21,11 @@ export class GestisciUtentiService {
 
   updateUserRoles(id: number, roles: any[]): Observable<any> {
     this.router.navigate(['/profile/gestisci-utenti']);
-    return this.http.patch<any>(`${environment.apiUrl}/users/${id}`, { ruoli_sede: roles });
+    return this.http.patch<any>(`${environment.apiUrl}/user/${id}/roles`, roles);
   }
 
   deleteUser(id: number): Observable<any> {
     this.router.navigate(['/profile/gestisci-utenti']);
-    return this.http.delete<any>(`${environment.apiUrl}/users/${id}`);
+    return this.http.delete<any>(`${environment.apiUrl}/user/${id}`);
   }
 }

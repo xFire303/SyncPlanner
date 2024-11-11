@@ -89,6 +89,8 @@ export class EditUtenteComponent implements OnInit {
           })
         );
 
+        console.log(this.sediRoleUtenteSelezionato);
+
         // Crea la rolesMap per l'utente che stai modificando
         const rolesMap = this.createRolesMap(
           this.sediRoleUtenteSelezionato, // Usa i ruoli dell'utente che stai modificando
@@ -114,9 +116,7 @@ export class EditUtenteComponent implements OnInit {
 
         // Disabilita i ruoli per le sedi dove l'utente loggato non è admin
         if (!this.sediAdminUtenteLoggato.includes(location)) {
-          control?.disable(); // Disabilita solo il controllo
-        } else {
-          control?.enable(); // Abilita per i ruoli amministrativi
+          control?.disable();
         }
 
         control?.valueChanges.subscribe((isSelected: boolean) => {
@@ -147,15 +147,8 @@ export class EditUtenteComponent implements OnInit {
 
         // Assegna il valore per questa sede e ruolo
         rolesMap[location][role] = hasRole;
-
-        // Disabilita i ruoli per le sedi dove l'utente loggato non è 'admin'
-        if (!sediAdmin.includes(location)) {
-          rolesMap[location][role] = false; // Non cambia il valore se è già selezionato, ma disabilita
-        }
       });
     });
-
-    console.log(rolesMap);
 
     return rolesMap;
   }
@@ -179,8 +172,10 @@ export class EditUtenteComponent implements OnInit {
   }
 
   submitForm() {
+    console.log(this.editUtenteForm.value);
     const formData = this.editUtenteForm.value;
     const updatedRoles = [];
+    const existingRoles = this.sediRoleUtenteSelezionato;
 
     for (const [key, value] of Object.entries(formData)) {
       if (value) {

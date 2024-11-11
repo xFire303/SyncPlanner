@@ -41,7 +41,7 @@ public class UserController {
 
         userService.addUser(user);
 
-        RolesModel guestRole = roleService.getRoleById(1L);
+        RolesModel guestRole = roleService.getRoleById(1);
 
         for (String sedeNome : sediNomi) {
             SediModel sede = sediService.getSedeByName(sedeNome);
@@ -97,7 +97,7 @@ public class UserController {
     }
 
     @PatchMapping("/user/{id}/roles")
-    public ResponseEntity<Void> updateUserRoles(@PathVariable("id") Integer id, @RequestBody UpdateUserSediRole userSedeRole) {
+    public ResponseEntity<Void> updateUserRoles(@PathVariable("id") Integer id, @RequestBody List<UpdateUserSediRole> userSedeRole) {
         userSedeRoleService.updateUserSedeRole(id, userSedeRole);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
