@@ -113,9 +113,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-
-    @DeleteMapping("/user/{id}")
-    public void deleteUser(@PathVariable("id") Integer id) {
-        userService.deleteUser(id);
-    }
 }

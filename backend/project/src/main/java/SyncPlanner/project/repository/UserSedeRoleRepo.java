@@ -1,5 +1,6 @@
 package SyncPlanner.project.repository;
 
+import SyncPlanner.project.entity.RolesModel;
 import SyncPlanner.project.entity.SediModel;
 import SyncPlanner.project.entity.UserModel;
 import SyncPlanner.project.entity.UserSedeRoleModel;
@@ -19,5 +20,7 @@ public interface UserSedeRoleRepo extends JpaRepository<UserSedeRoleModel, Integ
     List<UserSedeRoleModel> getUserSediRole(Integer userId);
 
     @Transactional
-    void deleteByUser(UserModel user);
+    void deleteByUserAndSedeAndRole(UserModel user, SediModel sede, RolesModel role);
+
+    boolean existsByUserAndSedeAndRole(UserModel user, SediModel sede, RolesModel role);
 }

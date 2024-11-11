@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { delay, Observable, tap } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 
@@ -19,9 +19,11 @@ export class GestisciUtentiService {
     return this.http.get<any>(`${environment.apiUrl}/users`);
   }
 
-  updateUserRoles(id: number, roles: any[]): Observable<any> {
-    this.router.navigate(['/profile/gestisci-utenti']);
-    return this.http.patch<any>(`${environment.apiUrl}/user/${id}/roles`, roles);
+  updateUserRoles(id: number, updatedRoles: any[], removedRoles: any[]): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/user/${id}/roles`, { updatedRoles, removedRoles }).pipe(
+      delay(500),
+      tap(() => this.router.navigate(['/profile/gestisci-utenti']))
+    );
   }
 
   deleteUser(id: number): Observable<any> {

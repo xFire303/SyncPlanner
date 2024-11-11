@@ -89,8 +89,6 @@ export class EditUtenteComponent implements OnInit {
           })
         );
 
-        console.log(this.sediRoleUtenteSelezionato);
-
         // Crea la rolesMap per l'utente che stai modificando
         const rolesMap = this.createRolesMap(
           this.sediRoleUtenteSelezionato, // Usa i ruoli dell'utente che stai modificando
@@ -172,20 +170,30 @@ export class EditUtenteComponent implements OnInit {
   }
 
   submitForm() {
-    console.log(this.editUtenteForm.value);
     const formData = this.editUtenteForm.value;
-    const updatedRoles = [];
-    const existingRoles = this.sediRoleUtenteSelezionato;
+    const updatedSediRoles = [];
+    const removedSediRoles = [];
 
     for (const [key, value] of Object.entries(formData)) {
+      const [role, location] = key.split('_');
+
       if (value) {
-        const [role, location] = key.split('_');
-        updatedRoles.push({ sedeName: location, roleName: role });
+        // Aggiungi la sede-ruolo selezionata
+        updatedSediRoles.push({ sedeName: location, roleName: role });
+      } else {
+        // Memorizza le sedi-ruoli deselezionati per la rimozione
+        const existingRole = this.sediRoleUtenteSelezionato.find(
+          (sediRole: any) =>
+            sediRole.sede_nome === location && sediRole.ruolo_nome === role
+        );
+        if (existingRole) {
+          removedSediRoles.push({ sedeName: location, roleName: role });
+        }
       }
     }
 
     this.gestisciUtentiService
-      .updateUserRoles(+this.idSelectedUser, updatedRoles)
+      .updateUserRoles(+this.idSelectedUser, updatedSediRoles, removedSediRoles)
       .subscribe();
   }
 

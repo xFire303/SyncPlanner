@@ -2,8 +2,13 @@ package SyncPlanner.project.service;
 
 import SyncPlanner.project.dto.UserUpdateProfile;
 import SyncPlanner.project.entity.UserModel;
+import SyncPlanner.project.repository.BookingParticipantsRepo;
+import SyncPlanner.project.repository.BookingsRepo;
 import SyncPlanner.project.repository.UserRepo;
+import SyncPlanner.project.repository.UserSedeRoleRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -14,6 +19,15 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepo userRepository;
+
+    @Autowired
+    private UserSedeRoleRepo userSedeRoleRepo;
+
+    @Autowired
+    private BookingsRepo bookingsRepo;
+
+    @Autowired
+    private BookingParticipantsRepo bookingParticipantsRepo;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -64,5 +78,10 @@ public class UserService {
         }
 
         userRepository.save(existingUser);
+    }
+
+    public void deleteUser(Integer id) {
+        userSedeRoleRepo.deleteByUser(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
+        userRepository.deleteById(id);
     }
 }

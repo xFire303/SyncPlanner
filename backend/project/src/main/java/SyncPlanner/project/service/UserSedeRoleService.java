@@ -41,24 +41,34 @@ public class UserSedeRoleService {
         return userSedeRoleRepo.findAll();
     }
 
-    public void updateUserSedeRole(Integer userId, List<UpdateUserSediRole> userSediRoles) {
+    public void updateUserSedeRole(Integer userId, List<UpdateUserSediRole> updatedRoles, List<UpdateUserSediRole> removedRoles) {
         // Recupera l'utente
         UserModel user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
 
-        // Rimozione di tutti i ruoli associati all'utente
-        userSedeRoleRepo.deleteByUser(user);
-
-        // Aggiungi i nuovi ruoli
-        for (UpdateUserSediRole userSedeRole : userSediRoles) {
-            SediModel sede = sedeRepository.findByName(userSedeRole.getSedeName())
+        // Rimuovi solo i ruoli selezionati per la rimozione
+        for (UpdateUserSediRole roleToRemove : removedRoles) {
+            SediModel sede = sedeRepository.findByName(roleToRemove.getSedeName())
                     .orElseThrow(() -> new RuntimeException("Sede non trovata"));
-
-            RolesModel role = roleRepository.findByName(userSedeRole.getRoleName())
+            RolesModel role = roleRepository.findByName(roleToRemove.getRoleName())
                     .orElseThrow(() -> new RuntimeException("Ruolo non trovato"));
 
-            UserSedeRoleModel newUserSedeRole = new UserSedeRoleModel(user, sede, role);
-            userSedeRoleRepo.save(newUserSedeRole);
+            // Rimuove la specifica relazione sede-ruolo
+            userSedeRoleRepo.deleteByUserAndSedeAndRole(user, sede, role);
+        }
+
+        // Aggiungi o aggiorna i ruoli selezionati
+        for (UpdateUserSediRole newUserRole : updatedRoles) {
+            SediModel sede = sedeRepository.findByName(newUserRole.getSedeName())
+                    .orElseThrow(() -> new RuntimeException("Sede non trovata"));
+            RolesModel role = roleRepository.findByName(newUserRole.getRoleName())
+                    .orElseThrow(() -> new RuntimeException("Ruolo non trovato"));
+
+            // Verifica se l'associazione esiste già, altrimenti la crea
+            if (!userSedeRoleRepo.existsByUserAndSedeAndRole(user, sede, role)) {
+                UserSedeRoleModel newUserSedeRole = new UserSedeRoleModel(user, sede, role);
+                userSedeRoleRepo.save(newUserSedeRole);
+            }
         }
     }
 }
