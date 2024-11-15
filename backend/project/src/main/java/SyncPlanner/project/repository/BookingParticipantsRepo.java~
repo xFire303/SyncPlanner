@@ -22,6 +22,4 @@ public interface BookingParticipantsRepo extends JpaRepository<BookingParticipan
     @Transactional
     @Query("DELETE FROM BookingParticipantsModel bp WHERE bp.booking.id = :bookingId")
     void deleteByBookingId(Integer bookingId);
-
-    void deleteByUserId(Integer id);
 }

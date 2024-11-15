@@ -69,7 +69,8 @@
         } @else if (registratiForm.get('password')?.hasError('minlength')) {
         <p class="text-error">La password deve avere almeno 8 caratteri</p>
         } @else if (registratiForm.get('password')?.hasError('pattern')) {
-        <p class="text-error">La password non è sicura!</p>
+        <p class="text-error">Password: almeno un numero, una maiuscola e un simbolo speciale.
+        </p>
         }
       </div>
       <div class="input-box">

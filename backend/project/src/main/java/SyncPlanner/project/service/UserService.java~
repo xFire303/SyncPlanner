@@ -82,9 +82,7 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Integer id) {
-        UserModel user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-
-        userSedeRoleRepo.deleteByUser(user);
+        UserModel user = user.deleteByUser(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
         bookingParticipantsRepo.deleteByUserId(id);
         bookingsRepo.deleteByUserId(id);
         userRepository.deleteById(id);

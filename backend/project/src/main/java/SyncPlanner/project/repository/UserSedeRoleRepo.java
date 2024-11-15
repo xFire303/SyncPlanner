@@ -23,4 +23,6 @@ public interface UserSedeRoleRepo extends JpaRepository<UserSedeRoleModel, Integ
     void deleteByUserAndSedeAndRole(UserModel user, SediModel sede, RolesModel role);
 
     boolean existsByUserAndSedeAndRole(UserModel user, SediModel sede, RolesModel role);
+
+    void deleteByUser(UserModel userNotFound);
 }

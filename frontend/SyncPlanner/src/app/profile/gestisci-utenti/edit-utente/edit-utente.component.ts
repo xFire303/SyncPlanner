@@ -199,6 +199,7 @@ export class EditUtenteComponent implements OnInit {
 
   deleteUser() {
     this.gestisciUtentiService.deleteUser(+this.idSelectedUser).subscribe();
+    
   }
 
   chiudi() {

@@ -34,7 +34,7 @@ import {
     InputGroupAddonModule,
     RouterModule,
     RouterOutlet,
-    MessagesModule,
+    MessagesModule
   ],
 })
 export class RegistratiComponent implements OnInit {
