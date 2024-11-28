@@ -25,8 +25,7 @@ import {
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
-    RouterModule,
-    RouterOutlet,
+    RouterModule
   ],
 })
 export class AccediComponent implements OnInit {
