@@ -63,15 +63,8 @@ public class UserController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> loginUser(@RequestBody UserLoginRequest loginRequest) {
-        Optional<UserModel> user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
-
-
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get().getId());
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email o password non validi");
-        }
+    public String loginUser(@RequestBody UserLoginRequest loginRequest) {
+        return userService.loginUser(loginRequest.getUsername(), loginRequest.getPassword());
     }
 
     @GetMapping("/user/{id}")

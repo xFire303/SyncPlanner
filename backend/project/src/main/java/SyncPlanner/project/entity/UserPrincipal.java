@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UserPrincipal implements UserDetails {
 
-    private UserModel user;
+    private final UserModel user;
 
     public UserPrincipal(UserModel user) {
         this.user = user;
@@ -50,5 +50,9 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getEmail() {
+        return user.getEmail();
     }
 }

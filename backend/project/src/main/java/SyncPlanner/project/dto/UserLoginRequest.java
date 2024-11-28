@@ -11,6 +11,6 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Data
 public class UserLoginRequest {
-    private String email;
+    private String username;
     private String password;
 }

@@ -8,7 +8,9 @@ import SyncPlanner.project.repository.UserRepo;
 import SyncPlanner.project.repository.UserSedeRoleRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -32,17 +34,24 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTService jwtService;
+
     public void addUser(UserModel user) {
         user.setUsername(generateUniqueUsername(user.getName(), user.getSurname()));
         userRepository.save(user);
     }
 
-    public Optional<UserModel> loginUser(String email, String password) {
-        Optional<UserModel> user = userRepository.findByEmail(email);
-        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            return user;
+    public String loginUser(String email, String password) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+
+        if(authentication.isAuthenticated()) {
+            return jwtService.generateToken(email);
         } else {
-            return Optional.empty();
+            return "Error logging in";
         }
     }
 
