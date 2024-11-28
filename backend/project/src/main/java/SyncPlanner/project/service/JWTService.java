@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +29,11 @@ public class JWTService {
         secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Integer userId) {
 
         Map<String, Object> claims = new HashMap<>();
+
+        claims.put("id", userId.toString());
 
         return Jwts.builder()
                 .claims()
@@ -63,6 +66,19 @@ public class JWTService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public String getUserIdFromToken(String token) {
+        return extractClaim(token, claims -> claims.get("id", String.class));
+    }
+
+    public String extractTokenFromHeader(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {

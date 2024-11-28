@@ -48,7 +48,7 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
     this.prenotazioneService
       .getPrenotazione(+this.id)
       .subscribe((prenotazione) => {
-        if (prenotazione.user.id === +this.userService.getUserId()) {
+        if (prenotazione.user.id === this.userService.getUserId()) {
           this.proprietarioPrenotazione = true;
         } else {
           this.proprietarioPrenotazione = false;
@@ -96,7 +96,7 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
 
   aggiungitiAllaPrenotazione() {
     this.partecipantiService
-      .aggiungiPartecipante(+this.userService.getUserId(), +this.id)
+      .aggiungiPartecipante(this.userService.getUserId(), +this.id)
       .subscribe(() => {
         this.close.emit();
       });
@@ -104,7 +104,7 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
 
   rimuovitiDallaPrenotazione() {
     this.partecipantiService
-      .deletePartecipanteByPrenotazione(+this.id, +this.userService.getUserId())
+      .deletePartecipanteByPrenotazione(+this.id, this.userService.getUserId())
       .subscribe(() => {
         this.close.emit();
       });

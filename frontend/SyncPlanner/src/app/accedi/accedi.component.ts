@@ -4,7 +4,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 import { UserService } from '../services/user.service';
 
@@ -41,7 +41,7 @@ export class AccediComponent implements OnInit {
   }
 
   accediForm = new FormGroup({
-    email: new FormControl<string>('', [Validators.required, Validators.email]),
+    username: new FormControl<string>('', [Validators.required, Validators.email]),
     password: new FormControl<string>('', [
       Validators.required,
       Validators.minLength(8),

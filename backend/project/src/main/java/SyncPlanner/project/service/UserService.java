@@ -2,17 +2,23 @@ package SyncPlanner.project.service;
 
 import SyncPlanner.project.dto.UserUpdateProfile;
 import SyncPlanner.project.entity.UserModel;
+import SyncPlanner.project.entity.UserPrincipal;
 import SyncPlanner.project.repository.BookingParticipantsRepo;
 import SyncPlanner.project.repository.BookingsRepo;
 import SyncPlanner.project.repository.UserRepo;
 import SyncPlanner.project.repository.UserSedeRoleRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,24 +47,33 @@ public class UserService {
     private JWTService jwtService;
 
     public void addUser(UserModel user) {
+
         user.setUsername(generateUniqueUsername(user.getName(), user.getSurname()));
         userRepository.save(user);
     }
 
-    public String loginUser(String email, String password) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+    public ResponseEntity<?> loginUser(String email, String password) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 
-        if(authentication.isAuthenticated()) {
-            return jwtService.generateToken(email);
-        } else {
-            return "Error logging in";
+            if (authentication.isAuthenticated()) {
+                UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
+                Integer userId = userDetails.getId();
+                String token = jwtService.generateToken(email, userId);
+                return ResponseEntity.ok(token);
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+            }
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Email o password errati");
         }
     }
 
-    public List<String> getAllUserEmails() {
-        return userRepository.findAll().stream()
-                .map(UserModel::getEmail)
-                .toList();
+
+    public boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     private String generateUniqueUsername(String name, String surname) {

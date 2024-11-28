@@ -5,10 +5,8 @@ import SyncPlanner.project.entity.RolesModel;
 import SyncPlanner.project.entity.SediModel;
 import SyncPlanner.project.entity.UserModel;
 import SyncPlanner.project.entity.UserSedeRoleModel;
-import SyncPlanner.project.service.RoleService;
-import SyncPlanner.project.service.SediService;
-import SyncPlanner.project.service.UserSedeRoleService;
-import SyncPlanner.project.service.UserService;
+import SyncPlanner.project.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +30,9 @@ public class UserController {
 
     @Autowired
     private UserSedeRoleService userSedeRoleService;
+
+    @Autowired
+    private JWTService jwtService;
 
     @PostMapping("/signup")
     public void addUser(@RequestBody UserRegistration userRegistration) {
@@ -57,28 +58,35 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/emails")
-    public List<String> getAllUserEmails() {
-        return userService.getAllUserEmails();
+    @GetMapping("/users/check-email")
+    public ResponseEntity<Boolean> checkIfEmailExists(@RequestParam String email) {
+        boolean exists = userService.emailExists(email);
+        return ResponseEntity.ok(exists);
     }
 
     @PostMapping("/signin")
-    public String loginUser(@RequestBody UserLoginRequest loginRequest) {
+    public ResponseEntity<?> loginUser(@RequestBody UserLoginRequest loginRequest) {
         return userService.loginUser(loginRequest.getUsername(), loginRequest.getPassword());
     }
 
-    @GetMapping("/user/{id}")
-    public Optional<UserModel> getUserById(@PathVariable("id") Integer id) {
+    @GetMapping("/user")
+    public Optional<UserModel> getUserById(HttpServletRequest request) {
+        String token = jwtService.extractTokenFromHeader(request);
+        Integer id = Integer.parseInt(jwtService.getUserIdFromToken(token));
         return userService.getUserById(id);
     }
 
-    @GetMapping("/user/{id}/roles")
-    public List<UserSedeRoleModel> getUserRoles(@PathVariable("id") Integer id) {
+    @GetMapping("/user/roles")
+    public List<UserSedeRoleModel> getUserRoles(HttpServletRequest request) {
+        String token = jwtService.extractTokenFromHeader(request);
+        Integer id = Integer.parseInt(jwtService.getUserIdFromToken(token));
         return userSedeRoleService.getUserSediRole(id);
     }
 
-    @PatchMapping("/user/{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable("id") Integer id, @RequestBody UserUpdateProfile user) {
+    @PatchMapping("/user")
+    public ResponseEntity<Void> updateUser(@RequestBody UserUpdateProfile user, HttpServletRequest request) {
+        String token = jwtService.extractTokenFromHeader(request);
+        Integer id = Integer.parseInt(jwtService.getUserIdFromToken(token));
         userService.updateUser(id, user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -88,8 +96,10 @@ public class UserController {
         return userSedeRoleService.getUsers();
     }
 
-    @PostMapping("/user/{id}/roles")
-    public ResponseEntity<?> updateUserRoles(@PathVariable Integer id, @RequestBody UpdateUserRolesRequest updateUserRolesRequest) {
+    @PostMapping("/user/roles")
+    public ResponseEntity<?> updateUserRoles(@RequestBody UpdateUserRolesRequest updateUserRolesRequest, HttpServletRequest request) {
+        String token = jwtService.extractTokenFromHeader(request);
+        Integer id = Integer.parseInt(jwtService.getUserIdFromToken(token));
         try {
             userSedeRoleService.updateUserSedeRole(id, updateUserRolesRequest.getUpdatedRoles(), updateUserRolesRequest.getRemovedRoles());
 
@@ -107,8 +117,10 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/user/{id}")
-    public void deleteUser(@PathVariable("id") Integer id) {
+    @DeleteMapping("/user")
+    public void deleteUser(HttpServletRequest request) {
+        String token = jwtService.extractTokenFromHeader(request);
+        Integer id = Integer.parseInt(jwtService.getUserIdFromToken(token));
         userService.deleteUser(id);
     }
 }

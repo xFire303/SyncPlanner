@@ -37,8 +37,9 @@ public class WebConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request
-                                .requestMatchers("signup", "signin")
+                                .requestMatchers("signup", "signin", "users/check-email")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
@@ -48,7 +49,6 @@ public class WebConfig {
                 .build();
     }
 
-    @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());

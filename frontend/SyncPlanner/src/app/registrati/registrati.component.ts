@@ -115,10 +115,12 @@ export class RegistratiComponent implements OnInit {
 
   submitForm() {
     if (this.registratiForm.valid) {
-      this.userService.checkIfEmailAlreadyExists(this.registratiForm.value).then(
+      this.userService.checkIfEmailAlreadyExists(this.registratiForm.value).subscribe(
         (emailExists) => {
-          if (emailExists) {
-            this.errorMessage = 'Esiste già un utente con questa email';
+          if (!emailExists) {
+            this.userService.getErrorMessage$.subscribe((message) => {
+              this.errorMessage = message;
+            })
             this.showRegistratiForm = true;
           } else {
             this.showRegistratiForm = false;
