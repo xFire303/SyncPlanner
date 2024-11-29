@@ -89,7 +89,7 @@ export class GestisciProfiloComponent implements OnInit {
         this.message = message;
       });
 
-      this.userService.changeCredentials(userData).subscribe({});
+      this.userService.changeCredentials(userData).subscribe();
       this.profileForm.patchValue({
         password: '',
         confermaPassword: ''

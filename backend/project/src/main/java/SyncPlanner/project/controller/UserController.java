@@ -84,7 +84,7 @@ public class UserController {
     }
 
     @PatchMapping("/user")
-    public ResponseEntity<Void> updateUser(@RequestBody UserUpdateProfile user, HttpServletRequest request) {
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateProfile user, HttpServletRequest request) {
         String token = jwtService.extractTokenFromHeader(request);
         Integer id = Integer.parseInt(jwtService.getUserIdFromToken(token));
         userService.updateUser(id, user);

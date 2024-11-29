@@ -96,7 +96,7 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
 
   aggiungitiAllaPrenotazione() {
     this.partecipantiService
-      .aggiungiPartecipante(this.userService.getUserId(), +this.id)
+      .aggiungiPartecipante(+this.id)
       .subscribe(() => {
         this.close.emit();
       });
@@ -104,7 +104,7 @@ export class VisualizzaPrenotazioneComponent implements OnInit {
 
   rimuovitiDallaPrenotazione() {
     this.partecipantiService
-      .deletePartecipanteByPrenotazione(+this.id, this.userService.getUserId())
+      .deletePartecipanteByPrenotazione(+this.id)
       .subscribe(() => {
         this.close.emit();
       });

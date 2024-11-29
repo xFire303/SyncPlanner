@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, timer, throwError, of } from 'rxjs';
-import {
-  map,
-  takeUntil,
-  tap,
-  delay,
-  catchError,
-} from 'rxjs/operators';
+import { map, takeUntil, tap, delay, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import * as bcrypt from 'bcryptjs';
@@ -35,20 +29,24 @@ export class UserService {
   }
 
   checkIfEmailAlreadyExists(userData: any): Observable<boolean> {
-    return this.http.get<boolean>(`${environment.apiUrl}/users/check-email?email=${userData.email}`).pipe(
-      map((exists: boolean) => {
-        if (exists) {
-          this.errorMessage$.next('Esiste già un utente con questa email');
-          return false; // L'email esiste
-        } else {
-          return true; // L'email non esiste
-        }
-      }),
-      catchError((error) => {
-        this.errorMessage$.next('Si è verificato un errore nel server');
-        return of(false);  // Se c'è un errore nel recupero, considera false
-      })
-    );
+    return this.http
+      .get<boolean>(
+        `${environment.apiUrl}/users/check-email?email=${userData.email}`
+      )
+      .pipe(
+        map((exists: boolean) => {
+          if (exists) {
+            this.errorMessage$.next('Esiste già un utente con questa email');
+            return false; // L'email esiste
+          } else {
+            return true; // L'email non esiste
+          }
+        }),
+        catchError((error) => {
+          this.errorMessage$.next('Si è verificato un errore nel server');
+          return of(false); // Se c'è un errore nel recupero, considera false
+        })
+      );
   }
 
   register(userData: any, sediData: string[]): Observable<any> {
@@ -77,20 +75,22 @@ export class UserService {
   }
 
   login(userData: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/signin`, userData, {responseType: 'text'}).pipe(
-      map((token: string) => {
-        this.successMessage$.next('Accesso effettuato con successo');
-        localStorage.setItem(this.localStorageKey, 'true');
-        localStorage.setItem('token', token);
-        this.startLogoutTimer();
-      }),
-      delay(1500),
-      tap(() => this.navigateTo('/home')),
-      catchError((error) => {
-        this.errorMessage$.next(error.error);;
-        return throwError(() => error);
-      })
-    );
+    return this.http
+      .post(`${environment.apiUrl}/signin`, userData, { responseType: 'text' })
+      .pipe(
+        map((token: string) => {
+          this.successMessage$.next('Accesso effettuato con successo');
+          localStorage.setItem(this.localStorageKey, 'true');
+          localStorage.setItem('token', token);
+          this.startLogoutTimer();
+        }),
+        delay(1500),
+        tap(() => this.navigateTo('/home')),
+        catchError((error) => {
+          this.errorMessage$.next(error.error);
+          return throwError(() => error);
+        })
+      );
   }
 
   getUserIdFromToken(): number {
@@ -103,15 +103,15 @@ export class UserService {
   }
 
   getCurrentUserData(): Observable<any> {
-    return this.http.get<any>(
-      `${environment.apiUrl}/user`, {headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }}
-    );
+    return this.http.get<any>(`${environment.apiUrl}/user`, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+    });
   }
 
   getCurrentUserSediRole(): Observable<any> {
-    return this.http.get<any>(
-      `${environment.apiUrl}/user/roles`, {headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }}
-    );
+    return this.http.get<any>(`${environment.apiUrl}/user/roles`, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+    });
   }
 
   isLoggedIn(): boolean {
@@ -147,14 +147,13 @@ export class UserService {
     this.successMessage$.next('Credenziali modificate con successo');
 
     return this.http
-      .patch(
-        `${environment.apiUrl}/user`, {headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }},
-        userData
-      )
+      .patch(`${environment.apiUrl}/user`, userData, {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+      })
       .pipe(tap(() => this.navigateTo('/profile/gestisci-profilo')));
   }
 
-  getUserId(): number{
-    return this.getUserIdFromToken() || 0;
+  getUserId(): number {
+    return +this.getUserIdFromToken() || 0;
   }
 }

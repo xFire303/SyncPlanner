@@ -4,7 +4,7 @@ import { BadgeModule } from 'primeng/badge';
 
 import { CommonModule } from '@angular/common';
 
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 import { NotificheComponent } from '../notifiche/notifiche.component';
 
@@ -15,7 +15,6 @@ import { UserService } from '../services/user.service';
   standalone: true,
   imports: [
     BadgeModule,
-    RouterOutlet,
     RouterModule,
     NotificheComponent,
     CommonModule,

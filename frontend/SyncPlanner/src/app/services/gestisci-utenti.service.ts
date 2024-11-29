@@ -15,7 +15,7 @@ export class GestisciUtentiService {
   constructor(private http: HttpClient, private router: Router) {}
 
   getAllUsers(): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}/users`);
+    return this.http.get<any>(`${environment.apiUrl}/users`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } });
   }
 
   updateUserRoles(
@@ -24,10 +24,16 @@ export class GestisciUtentiService {
     removedRoles: any[]
   ): Observable<any> {
     return this.http
-      .post<any>(`${environment.apiUrl}/user/${id}/roles`, {
-        updatedRoles,
-        removedRoles,
-      })
+      .post<any>(
+        `${environment.apiUrl}/user/${id}/roles`,
+        {
+          updatedRoles,
+          removedRoles,
+        },
+        {
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+        }
+      )
       .pipe(
         delay(500),
         tap(() => this.router.navigate(['/profile/gestisci-utenti']))
@@ -35,9 +41,13 @@ export class GestisciUtentiService {
   }
 
   deleteUser(id: number): Observable<any> {
-    return this.http.delete<any>(`${environment.apiUrl}/user/${id}`).pipe(
-      delay(500),
-      tap(() => this.router.navigate(['/profile/gestisci-utenti']))
-    );
+    return this.http
+      .delete<any>(`${environment.apiUrl}/user/${id}`, {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+      })
+      .pipe(
+        delay(500),
+        tap(() => this.router.navigate(['/profile/gestisci-utenti']))
+      );
   }
 }
