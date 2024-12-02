@@ -5,7 +5,7 @@ import { RouterOutlet, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-welcome',
   standalone: true,
-  imports: [RouterOutlet, RouterModule],
+  imports: [RouterModule],
   templateUrl: './welcome.component.html',
   styleUrl: './welcome.component.css',
 })
