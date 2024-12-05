@@ -59,11 +59,41 @@ i:hover {
 }
 
 @media screen and (max-width: 768px) {
+
   img {
     height: 2rem;
   }
 
   .user h1 {
     font-size: 0.8rem;
+  }
+
+  /* .navbar-collapse {
+    background-color: rgba(211, 211, 211, 0.9);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    height: 100vh;
+  } */
+
+  .navbar-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .navbar-nav .nav-item {
+    margin: 10px 0;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 1.5rem;
+    font-weight: 600;
   }
 }

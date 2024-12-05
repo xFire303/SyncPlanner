@@ -8,6 +8,8 @@ import SyncPlanner.project.service.DiscordBotService;
 import SyncPlanner.project.service.JWTService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,56 +27,55 @@ public class BookingsController {
     @Autowired
     private DiscordBotService discordBotService;
 
-    private static final Map<String, String> SEDE_TO_DISCORD_ROLE = Map.of(
-            "verona", "1308145201352671302", // ID ruolo per Verona
-            "padova", "1308145246487445555", // ID ruolo per Padova
-            "milano", "345678901234567890", // ID ruolo per Milano
-            "como", "456789012345678901",   // ID ruolo per Como
-            "napoli", "567890123456789012", // ID ruolo per Napoli
-            "roma", "678901234567890123"    // ID ruolo per Roma
-    );
-
     @PostMapping("/bookings")
-    public void addBooking(@RequestBody BookingsRequest booking, HttpServletRequest request) {
+    public ResponseEntity<Void> addBooking(@RequestBody BookingsRequest booking, HttpServletRequest request) {
         String token = jwtService.extractTokenFromHeader(request);
-        String discordRoleId = SEDE_TO_DISCORD_ROLE.get(booking.getSedeName().toLowerCase());
-
-        if (discordRoleId != null) {
-            String message = "Ciao <@&%s>, **%s** sarà in sede il %s".formatted(
-                    discordRoleId,
-                    booking.getUserUsername(),
-                    booking.getDate()
-            );
-
-            discordBotService.sendMessageToThread(message);
-        } else {
-            throw new IllegalArgumentException("Sede non valida: " + booking.getSedeName());
-        }
-
         bookingsService.addBooking(booking);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/bookings")
-    public List<BookingsModel> getBookings(HttpServletRequest request) {
+    public ResponseEntity<List<BookingsModel>> getBookings(HttpServletRequest request) {
         String token = jwtService.extractTokenFromHeader(request);
-        return bookingsService.getBookings();
+        List<BookingsModel> bookings = bookingsService.getBookings();
+
+        return ResponseEntity.ok(bookings);
     }
 
     @GetMapping("/bookings/{id}")
-    public Optional<BookingsModel> getBookingById(@PathVariable("id") Integer id, HttpServletRequest request) {
+    public ResponseEntity<?> getBookingById(@PathVariable("id") Integer id, HttpServletRequest request) {
         String token = jwtService.extractTokenFromHeader(request);
-        return bookingsService.getBookingById(id);
+
+        Optional<BookingsModel> bookingOptional = bookingsService.getBookingById(id);
+
+        if (bookingOptional.isPresent()) {
+            return ResponseEntity.ok(bookingOptional.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found with ID: " + id);
+        }
     }
 
     @PatchMapping("/bookings/{id}")
-    public void updateBooking(@PathVariable("id") Integer id, @RequestBody UpdateBooking updateBooking, HttpServletRequest request) {
+    public ResponseEntity<?> updateBooking(@PathVariable("id") Integer id, @RequestBody UpdateBooking updateBooking, HttpServletRequest request) {
         String token = jwtService.extractTokenFromHeader(request);
-        bookingsService.updateBooking(id, updateBooking);
+
+        try{
+            bookingsService.updateBooking(id, updateBooking);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'aggiornamento: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/bookings/{id}")
-    public void deleteBooking(@PathVariable("id") Integer id, HttpServletRequest request) {
+    public ResponseEntity<?> deleteBooking(@PathVariable("id") Integer id, HttpServletRequest request) {
         String token = jwtService.extractTokenFromHeader(request);
-        bookingsService.deleteBooking(id);
+
+        if(bookingsService.deleteBooking(id)){
+            return ResponseEntity.ok().build();
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found with ID: " + id);
+        }
     }
 }

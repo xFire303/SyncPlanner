@@ -1,6 +1,9 @@
 package SyncPlanner.project.controller;
 
-import SyncPlanner.project.dto.*;
+import SyncPlanner.project.dto.UpdateUserRolesRequest;
+import SyncPlanner.project.dto.UserLoginRequest;
+import SyncPlanner.project.dto.UserRegistration;
+import SyncPlanner.project.dto.UserUpdateProfile;
 import SyncPlanner.project.entity.RolesModel;
 import SyncPlanner.project.entity.SediModel;
 import SyncPlanner.project.entity.UserModel;
@@ -35,7 +38,7 @@ public class UserController {
     private JWTService jwtService;
 
     @PostMapping("/signup")
-    public void addUser(@RequestBody UserRegistration userRegistration) {
+    public ResponseEntity<?> addUser(@RequestBody UserRegistration userRegistration) {
         UserModel user = userRegistration.getUser();
         List<String> sediNomi = userRegistration.getSedi();
 
@@ -46,16 +49,17 @@ public class UserController {
         for (String sedeNome : sediNomi) {
             SediModel sede = sediService.getSedeByName(sedeNome);
 
-            if(sede != null) {
+            if (sede != null) {
                 UserSedeRoleModel userSedeRole = new UserSedeRoleModel();
                 userSedeRole.setUser(user);
                 userSedeRole.setSede(sede);
                 userSedeRole.setRole(guestRole);
                 userSedeRoleService.addUserSedeRole(userSedeRole);
-            }else{
-                throw new RuntimeException("Sede not found: " + sedeNome);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sede not found: " + sedeNome);
             }
         }
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/users/check-email")
@@ -66,34 +70,51 @@ public class UserController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> loginUser(@RequestBody UserLoginRequest loginRequest) {
-        return userService.loginUser(loginRequest.getUsername(), loginRequest.getPassword());
+        try {
+            String token = userService.loginUser(loginRequest.getUsername(), loginRequest.getPassword());
+            return ResponseEntity.ok(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenziali non valide");
+        }
     }
 
     @GetMapping("/user")
-    public Optional<UserModel> getUserById(HttpServletRequest request) {
+    public ResponseEntity<UserModel> getUserById(HttpServletRequest request) {
         String token = jwtService.extractTokenFromHeader(request);
         Integer id = Integer.parseInt(jwtService.getUserIdFromToken(token));
-        return userService.getUserById(id);
+
+        Optional<UserModel> user = userService.getUserById(id);
+
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/user/roles")
-    public List<UserSedeRoleModel> getUserRoles(HttpServletRequest request) {
+    public ResponseEntity<List<UserSedeRoleModel>> getUserRoles(HttpServletRequest request) {
         String token = jwtService.extractTokenFromHeader(request);
         Integer id = Integer.parseInt(jwtService.getUserIdFromToken(token));
-        return userSedeRoleService.getUserSediRole(id);
+        List<UserSedeRoleModel> userSediRoles = userSedeRoleService.getUserSediRole(id);
+
+        return ResponseEntity.ok(userSediRoles);
     }
 
     @PatchMapping("/user")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateProfile user, HttpServletRequest request) {
         String token = jwtService.extractTokenFromHeader(request);
         Integer id = Integer.parseInt(jwtService.getUserIdFromToken(token));
-        userService.updateUser(id, user);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+        try {
+            userService.updateUser(id, user);
+            return ResponseEntity.ok("Profilo aggiornato con successo");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'aggiornamento: " + e.getMessage());
+        }
     }
 
     @GetMapping("/users")
-    public List<UserSedeRoleModel> getUsers() {
-        return userSedeRoleService.getUsers();
+    public ResponseEntity<List<UserSedeRoleModel>> getUsers() {
+        List <UserSedeRoleModel> users = userSedeRoleService.getUsers();
+
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping("/user/roles")
@@ -117,10 +138,13 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/user")
-    public void deleteUser(HttpServletRequest request) {
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Integer id, HttpServletRequest request) {
         String token = jwtService.extractTokenFromHeader(request);
-        Integer id = Integer.parseInt(jwtService.getUserIdFromToken(token));
-        userService.deleteUser(id);
+        if (userService.deleteUser(id)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utente non trovato");
+        }
     }
 }
