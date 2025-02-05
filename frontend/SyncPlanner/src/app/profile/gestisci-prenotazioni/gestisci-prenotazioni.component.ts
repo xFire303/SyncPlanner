@@ -7,16 +7,19 @@ import { PrenotazioniService } from '../../services/prenotazioni.service';
 import { idStateService } from '../../services/id-state.service';
 import { UserService } from '../../services/user.service';
 
+import { CapitalizePipe } from '../../pipes/capitalize.pipe';
+
 @Component({
   selector: 'app-gestisci-prenotazioni',
   standalone: true,
-  imports: [RouterOutlet, RouterModule],
+  imports: [RouterOutlet, RouterModule, CapitalizePipe],
   templateUrl: './gestisci-prenotazioni.component.html',
   styleUrl: './gestisci-prenotazioni.component.css',
 })
 export class GestisciPrenotazioniComponent implements OnInit {
   prenotazioni: any[] = [];
   utenteSediAdmin: string[] = [];
+  currentUserSediRole: any;
   currentUser: any;
 
   constructor(
@@ -29,10 +32,14 @@ export class GestisciPrenotazioniComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getCurrentUserData().subscribe((user) => {
       this.currentUser = user;
+    });
+    
+    this.userService.getCurrentUserSediRole().subscribe((sediRole) => {
+      this.currentUserSediRole = sediRole;
 
-      this.utenteSediAdmin = this.currentUser.ruoli_sede
-        .filter((ruoloSede: any) => ruoloSede.ruolo_nome === 'admin')
-        .map((ruoloSede: any) => ruoloSede.sede_nome);
+      this.utenteSediAdmin = sediRole
+        .filter((sediRole: any) => sediRole.role.name === 'admin')
+        .map((sediRole: any) => sediRole.sede.name);
 
       this.loadPrenotazioni();
     });
@@ -42,10 +49,10 @@ export class GestisciPrenotazioniComponent implements OnInit {
     this.prenotazioniService.getAllPrenotazioni().subscribe((prenotazioni) => {
       this.prenotazioni = prenotazioni
         .filter((prenotazione) => {
-          const isAdminSede = this.utenteSediAdmin.includes(prenotazione.sede);
+          const isAdminSede = this.utenteSediAdmin.includes(prenotazione.sede.name);
 
           const isUserPrenotazione =
-            prenotazione.utente === this.currentUser.username;
+            prenotazione.user.username === this.currentUser.username;
           return isAdminSede || isUserPrenotazione;
         })
         .sort((a, b) => {
@@ -69,8 +76,8 @@ export class GestisciPrenotazioniComponent implements OnInit {
     this.prenotazioniService.deletePrenotazione(id).subscribe(() => {
       this.prenotazioniService
         .getAllPrenotazioni()
-        .subscribe((prenotazioni) => {
-          this.prenotazioni = prenotazioni;
+        .subscribe(() => {
+          this.loadPrenotazioni();
         });
     });
   }

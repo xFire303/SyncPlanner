@@ -7,7 +7,6 @@
 
 .wrapper {
   position: relative;
-  max-width: 630px;
   width: 100%;
   background: #fff;
   padding: 34px;
@@ -35,7 +34,14 @@
 
 .wrapper .input-box {
   height: 52px;
-  margin: 38px 0;
+  margin: 38px 0 48px;
+}
+
+.wrapper .input-box label {
+  font-size: 15px;
+  color: #707070;
+  margin-bottom: 4px;
+  font-weight: 500;
 }
 
 .wrapper .input-box input {
@@ -52,6 +58,7 @@
   transition: all 0.3s ease;
 }
 
+
 .input-box input:focus,
 .input-box input:valid {
   border-color: #ff8a00;
@@ -61,7 +68,7 @@ h3 {
   color: #707070;
   font-size: 18px;
   font-weight: 500;
-  margin-bottom: 8px; /* Add margin for separation */
+  margin-bottom: 8px;
 }
 
 .input-box.button input {
@@ -93,7 +100,7 @@ h3 {
 }
 
 .container-partecipanti {
-  margin: 38px 0; /* Add margin for separation */
+  margin: 58px 0;
 }
 
 .partecipanti-list {

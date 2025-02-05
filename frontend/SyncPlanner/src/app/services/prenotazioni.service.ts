@@ -16,71 +16,35 @@ export class PrenotazioniService {
   seiGiaPartecipante$ = new BehaviorSubject<boolean>(false);
 
   getAllPrenotazioni(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/prenotazioni`);
+    return this.http.get<any[]>(`${environment.apiUrl}/bookings`, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+    });
+  }
+
+  getPrenotazione(id: number): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/bookings/${id}`, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+    });
   }
 
   createPrenotazione(prenotazione: any): Observable<any> {
-    return this.http.post<any>(
-      `${environment.apiUrl}/prenotazioni`,
-      prenotazione
-    );
+    return this.http.post<any>(`${environment.apiUrl}/bookings`, prenotazione, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+    });
   }
 
-  updatePrenotazione(prenotazione: any): Observable<any> {
-    return this.http.put<any>(
-      `${environment.apiUrl}/prenotazioni/${prenotazione.id}`,
-      prenotazione
+  updatePrenotazione(id: number, prenotazione: any): Observable<any> {
+    return this.http.patch<any>(
+      `${environment.apiUrl}/bookings/${id}`,
+      prenotazione,
+      { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } }
     );
   }
 
   deletePrenotazione(prenotazioneId: number): Observable<any> {
     return this.http.delete<any>(
-      `${environment.apiUrl}/prenotazioni/${prenotazioneId}`
+      `${environment.apiUrl}/bookings/${prenotazioneId}`,
+      { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } }
     );
   }
-
-  checkSeiGiaPartecipante(
-    prenotazioneId: number,
-    utente: any
-  ): Observable<boolean> {
-    return this.http
-      .get<any>(`${environment.apiUrl}/prenotazioni/${prenotazioneId}`)
-      .pipe(
-        switchMap((prenotazione) => {
-          const isPartecipante = prenotazione.partecipanti.includes(utente);
-          return of(isPartecipante);
-        })
-      );
-  }
-
-  addUtenteAllaPrenotazione(
-    prenotazioneId: number,
-    utente: any
-  ): Observable<any> {
-    return this.checkSeiGiaPartecipante(prenotazioneId, utente).pipe(
-      switchMap((isPartecipante) => {
-        if (isPartecipante) {
-          this.seiGiaPartecipante$.next(true);
-          return of(null);
-        } else {
-          this.seiGiaPartecipante$.next(false);
-          return this.http
-            .get<any>(`${environment.apiUrl}/prenotazioni/${prenotazioneId}`)
-            .pipe(
-              switchMap((prenotazione) => {
-                prenotazione.partecipanti.push(utente);
-                return this.http.patch<any>(
-                  `${environment.apiUrl}/prenotazioni/${prenotazioneId}`,
-                  { partecipanti: prenotazione.partecipanti }
-                );
-              })
-            );
-        }
-      })
-    );
-  }
-
-  // deleteUtenteDallaPrenotazione(prenotazioneId: number, utente: any): Observable<any> {
-  //   return this.http.delete<any>(`${environment.apiUrl}/prenotazioni/${prenotazioneId}`, { partecipanti: utente });
-  // }
 }

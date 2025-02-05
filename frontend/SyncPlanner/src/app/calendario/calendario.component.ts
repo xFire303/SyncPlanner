@@ -19,6 +19,7 @@ import { UserService } from '../services/user.service';
 import itLocale from '@fullcalendar/core/locales/it';
 import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import { VisualizzaPrenotazioneComponent } from '../visualizza-prenotazione/visualizza-prenotazione.component';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-calendario',
@@ -52,28 +53,36 @@ export class CalendarioComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.getCurrentUserData().subscribe((user) => {
-      this.currentUser = user;
-      this.sediUtente = user.ruoli_sede.map((ruolo: any) => ruolo.sede_nome);
+    this.updatePrenotazioni();
+  }
 
-      this.ruoliCurrentUser = user.ruoli_sede.map(
-        (ruoloSede: any) => ruoloSede.ruolo_nome
-      );
-
-      this.sediUtenteRoles = user.ruoli_sede
-        .filter((ruolo: any) => ruolo.ruolo_nome === 'admin')
-        .map((ruolo: any) => ruolo.sede_nome);
-
-      this.prenotazioniService
-        .getAllPrenotazioni()
-        .subscribe((prenotazioni) => {
-          this.prenotazioniList = prenotazioni.filter((prenotazione) =>
-            this.sediUtente.includes(prenotazione.sede)
+  updatePrenotazioni() {
+    this.userService
+      .getCurrentUserData()
+      .pipe(
+        switchMap((user) => {
+          this.currentUser = user;
+          return this.userService.getCurrentUserSediRole();
+        }),
+        switchMap((sediRole) => {
+          this.sediUtente = sediRole.map((sediRole: any) => sediRole.sede.name);
+          this.ruoliCurrentUser = sediRole.map(
+            (sediRole: any) => sediRole.role.name
           );
-          this.filteredPrenotazioniList = this.prenotazioniList;
-          this.updateCalendarEvents();
-        });
-    });
+          this.sediUtenteRoles = sediRole
+            .filter((sediRole: any) => sediRole.role.name === 'admin')
+            .map((sediRole: any) => sediRole.sede.name);
+
+          return this.prenotazioniService.getAllPrenotazioni();
+        })
+      )
+      .subscribe((prenotazioni: any) => {
+        this.prenotazioniList = prenotazioni.filter((prenotazione: any) =>
+          this.sediUtente.includes(prenotazione.sede.name)
+        );
+        this.filteredPrenotazioniList = this.prenotazioniList;
+        this.updateCalendarEvents();
+      });
 
     this.filtroService.filtroOptions$.subscribe((filterOptions) => {
       this.applyFilter(filterOptions);
@@ -96,6 +105,7 @@ export class CalendarioComponent implements OnInit {
     locale: itLocale,
     contentHeight: 'auto',
     height: 'auto',
+    handleWindowResize: true,
     headerToolbar: {
       left: 'Leggenda Filtro',
       center: 'title',
@@ -131,22 +141,13 @@ export class CalendarioComponent implements OnInit {
     );
   }
 
-  refreshPrenotazioni() {
-    this.prenotazioniService.getAllPrenotazioni().subscribe((prenotazioni) => {
-      this.prenotazioniList = prenotazioni.filter((prenotazione) =>
-        this.sediUtente.includes(prenotazione.sede)
-      );
-      this.filteredPrenotazioniList = this.prenotazioniList;
-      this.updateCalendarEvents();
-    });
-  }
-
   apriPrenotazione(arg: any) {
     this.selectedDate = arg.dateStr;
     this.showAddPrenotazione = true;
   }
 
   apriGestisciPrenotazione(arg: any) {
+    this.showVisualizzaPrenotazione = false;
     if (
       this.checkSediRoles(arg.event.extendedProps.sede) ||
       this.currentUser.username === arg.event.title
@@ -177,7 +178,7 @@ export class CalendarioComponent implements OnInit {
 
   chiudiGestisciPrenotazione() {
     this.showGestisciPrenotazione = false;
-    this.refreshPrenotazioni();
+    this.updatePrenotazioni();
   }
 
   chiudiLeggenda() {
@@ -194,31 +195,30 @@ export class CalendarioComponent implements OnInit {
 
   updateCalendarEvents() {
     const sedeColorMap: any = {
-      Verona: '#ff8a00',
-      Milano: '#8a00ff',
-      Padova: '#00ff8a',
-      Napoli: '#ff008a',
-      Como: '#4000ff',
-      Roma: '#ff001e',
+      verona: '#ff8a00',
+      milano: '#8a00ff',
+      padova: '#00ff8a',
+      napoli: '#ff008a',
+      como: '#4000ff',
+      roma: '#ff001e',
     };
 
     this.calendarOptions.events = this.filteredPrenotazioniList.map(
       (prenotazione) => ({
         id: prenotazione.id,
-        title: prenotazione.utente,
-        start: prenotazione.data,
+        title: prenotazione.user.username,
+        start: prenotazione.date,
         extendedProps: {
-          sede: prenotazione.sede,
+          sede: prenotazione.sede.name,
         },
-        color: sedeColorMap[prenotazione.sede],
+        color: sedeColorMap[prenotazione.sede.name],
         textColor: 'black',
       })
     );
   }
 
-  onPrenotazioneAggiunta(prenotazione: any) {
-    this.prenotazioniList.push(prenotazione);
-    this.updateCalendarEvents();
+  onPrenotazioneAggiunta() {
+    this.updatePrenotazioni();
   }
 
   filtro() {
@@ -233,7 +233,7 @@ export class CalendarioComponent implements OnInit {
       this.filteredPrenotazioniList = this.prenotazioniList;
     } else {
       this.filteredPrenotazioniList = this.prenotazioniList.filter(
-        (prenotazione) => selectedSedi.includes(prenotazione.sede)
+        (prenotazione) => selectedSedi.includes(prenotazione.sede.name)
       );
     }
     this.updateCalendarEvents();

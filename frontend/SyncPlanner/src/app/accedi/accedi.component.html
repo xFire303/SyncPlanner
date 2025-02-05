@@ -7,14 +7,14 @@
           type="text"
           [required]="true"
           pInputText
-          formControlName="email"
+          formControlName="username"
           placeholder="Inserisci la tua email"
-          (ngModelChange)="accediForm.get('email')?.markAsTouched()"
+          (ngModelChange)="accediForm.get('username')?.markAsTouched()"
         />
-        @if (accediForm.get('email')?.touched &&
-        accediForm.get('email')?.hasError('required')) {
+        @if (accediForm.get('username')?.touched &&
+        accediForm.get('username')?.hasError('required')) {
         <p class="text-error">L'email è richiesta</p>
-        } @else if (accediForm.get('email')?.hasError('email')) {
+        } @else if (accediForm.get('username')?.hasError('username')) {
         <p class="text-error">L'email non è valida</p>
         }
       </div>

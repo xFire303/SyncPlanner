@@ -18,7 +18,9 @@ import { Router } from '@angular/router';
 export class GestisciUtentiComponent implements OnInit {
   utenti: any[] = [];
   currentUser: any;
+  ruoliSede: any[] = [];
   filteredUtenti: any[] = [];
+  ruoliSedeUtentiAggregati: any[] = [];
 
   constructor(
     private gestisciUtentiService: GestisciUtentiService,
@@ -31,32 +33,47 @@ export class GestisciUtentiComponent implements OnInit {
     this.userService.getCurrentUserData().subscribe((user) => {
       this.currentUser = user;
 
-      if (this.currentUser && this.currentUser.ruoli_sede) {
-        const adminLocations = this.currentUser.ruoli_sede
-          .filter((ruoloSede: any) => ruoloSede.ruolo_nome === 'admin')
-          .map((ruoloSede: any) => ruoloSede.sede_nome);
+      this.userService.getCurrentUserSediRole().subscribe((sediRole) => {
+        this.ruoliSede = sediRole;
 
-        this.gestisciUtentiService.getAllUsers().subscribe((utenti) => {
-          this.utenti = utenti;
+        if (this.currentUser && this.ruoliSede) {
+          const adminLocations = this.ruoliSede
+            .filter((ruoloSede: any) => ruoloSede.role.name === 'admin')
+            .map((ruoloSede: any) => ruoloSede.sede.name);
 
-          // Ordina gli utenti in modo che il primo sia quello corrispondente al currentUser
-          this.utenti.sort((a, b) => {
-            if (a.id === this.currentUser.id) {
-              return -1;
-            } else if (b.id === this.currentUser.id) {
-              return 1;
-            } else {
-              return 0;
-            }
+          this.gestisciUtentiService.getAllUsers().subscribe((users) => {
+            this.utenti = users;
+
+            // Ordina gli utenti in modo che il primo sia quello corrispondente al currentUser
+            this.utenti.sort((a, b) => {
+              if (a.user.id === this.currentUser.id) {
+                return -1;
+              } else if (b.user.id === this.currentUser.id) {
+                return 1;
+              } else {
+                return 0;
+              }
+            });
+
+            // Aggrega i ruoli e le sedi per ogni utente
+            const utentiMap = new Map();
+            this.utenti.forEach((utente) => {
+              if (!utentiMap.has(utente.user.id)) {
+                utentiMap.set(utente.user.id, {
+                  user: utente.user,
+                  roles: [],
+                });
+              }
+              utentiMap.get(utente.user.id).roles.push({
+                sedeName: utente.sede.name,
+                roleName: utente.role.name,
+              });
+            });
+
+            this.ruoliSedeUtentiAggregati = Array.from(utentiMap.values());
           });
-
-          this.filteredUtenti = this.utenti.filter((utente: any) => {
-            return utente.ruoli_sede.some((ruoloSede: any) =>
-              adminLocations.includes(ruoloSede.sede_nome)
-            );
-          });
-        });
-      }
+        }
+      });
     });
   }
 

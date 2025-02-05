@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, timer, throwError } from 'rxjs';
-import { map, takeUntil, switchMap, tap, delay } from 'rxjs/operators';
+import { Observable, Subject, timer, throwError, of } from 'rxjs';
+import { map, takeUntil, tap, delay, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
-import bcrypt from 'bcryptjs';
-
-import { lastValueFrom } from 'rxjs';
+import * as bcrypt from 'bcryptjs';
+import * as jwt from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -29,86 +28,90 @@ export class UserService {
     return hashedPassword;
   }
 
-  register(userData: any): Observable<any> {
-    userData.password = this.encryptPassword(userData.password);
+  checkIfEmailAlreadyExists(userData: any): Observable<boolean> {
+    return this.http
+      .get<boolean>(
+        `${environment.apiUrl}/users/check-email?email=${userData.email}`
+      )
+      .pipe(
+        map((exists: boolean) => {
+          if (exists) {
+            this.errorMessage$.next('Esiste già un utente con questa email');
+            return false; // L'email esiste
+          } else {
+            return true; // L'email non esiste
+          }
+        }),
+        catchError((error) => {
+          this.errorMessage$.next('Si è verificato un errore nel server');
+          return of(false); // Se c'è un errore nel recupero, considera false
+        })
+      );
+  }
 
-    // const ruoliSede = sediData.map((sede: string) => ({
-    //   sede_nome: sede,
-    //   ruolo_nome: 'guest',
-    // }));
+  register(userData: any, sediData: string[]): Observable<any> {
+    userData.password = this.encryptPassword(userData.password);
 
     const userModel = {
       name: userData.nome.toLowerCase(),
       surname: userData.cognome.toLowerCase(),
       email: userData.email,
       password: userData.password,
-      // ruoli_sede: ruoliSede,
     };
 
-    return this.http
-      .get<any[]>(`${environment.apiUrl}/users/emails?email=${userData.email}`)
-      .pipe(
-        switchMap((users) => {
-          const emailExists = users.some(
-            (user) => user.email === userData.email
-          );
-          if (emailExists) {
-            return throwError(() =>
-              this.errorMessage$.next("L'email inserita è già stata usata")
-            );
-          }
+    const registrationData = {
+      user: userModel,
+      sedi: sediData.map((sede) => sede.toLowerCase()),
+    };
 
-          this.successMessage$.next('Registrazione effettuata con successo');
-         
-          return this.http.post(`${environment.apiUrl}/signup`, userModel).pipe(
-            delay(1500),
-            tap(() => this.navigateTo('/accedi'))
-          );
-        })
+    this.successMessage$.next('Registrazione effettuata con successo');
+
+    return this.http
+      .post(`${environment.apiUrl}/signup`, registrationData)
+      .pipe(
+        delay(1500),
+        tap(() => this.navigateTo('/accedi'))
       );
   }
 
   login(userData: any): Observable<any> {
     return this.http
-      .get<any[]>(`${environment.apiUrl}/users?email=${userData.email}`)
+      .post(`${environment.apiUrl}/signin`, userData, { responseType: 'text' })
       .pipe(
-        map((users) => {
-          const user = users.find((u) => u.email === userData.email);
-          if (!user) {
-            throw this.errorMessage$.next("L'email inserita è sbagliata");
-          }
-          // const decryptedPassword = this.decryptPassword(user.password);
-          // if (decryptedPassword !== userData.password) {
-          //   throw this.errorMessage$.next('La password inserita è sbagliata');
-          // }
-
+        map((token: string) => {
           this.successMessage$.next('Accesso effettuato con successo');
           localStorage.setItem(this.localStorageKey, 'true');
-          localStorage.setItem('idUtente', user.id.toString());
+          localStorage.setItem('token', token);
           this.startLogoutTimer();
-          return user;
         }),
         delay(1500),
-        tap(() => this.navigateTo('/home'))
+        tap(() => this.navigateTo('/home')),
+        catchError((error) => {
+          this.errorMessage$.next(error.error);
+          return throwError(() => error);
+        })
       );
   }
 
-  checkIfEmailAlreadyExists(userData: any): Promise<boolean> {
-    const users$ = this.http
-      .get<any[]>(`${environment.apiUrl}/users/emails?email=${userData.email}`)
-      .pipe(
-        map((users) => {
-          return users.some((user) => user.email === userData.email);
-        })
-      );
-
-    return lastValueFrom(users$);
+  getUserIdFromToken(): number {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken: any = jwt.jwtDecode(token);
+      return decodedToken.id;
+    }
+    return 0;
   }
 
   getCurrentUserData(): Observable<any> {
-    return this.http.get<any>(
-      `${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`
-    );
+    return this.http.get<any>(`${environment.apiUrl}/user`, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+    });
+  }
+
+  getCurrentUserSediRole(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/user/roles`, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+    });
   }
 
   isLoggedIn(): boolean {
@@ -138,21 +141,19 @@ export class UserService {
     timer(1000).subscribe(() => this.router.navigate([route]));
   }
 
-  private handleError(error: any): Observable<never> {
-    console.error(error);
-    return throwError(() => new Error('An error occurred'));
-  }
-
   changeCredentials(userData: any): Observable<any> {
     userData.password = this.encryptPassword(userData.password);
 
     this.successMessage$.next('Credenziali modificate con successo');
 
     return this.http
-      .patch(
-        `${environment.apiUrl}/users/${localStorage.getItem('idUtente')}`,
-        userData
-      )
+      .patch(`${environment.apiUrl}/user`, userData, {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+      })
       .pipe(tap(() => this.navigateTo('/profile/gestisci-profilo')));
+  }
+
+  getUserId(): number {
+    return +this.getUserIdFromToken() || 0;
   }
 }

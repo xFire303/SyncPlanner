@@ -28,17 +28,17 @@ import { UserService } from '../../../services/user.service';
 })
 export class EditUtenteComponent implements OnInit {
   utenti: any[] = [];
-  idCurrentUser!: string;
+  idSelectedUser!: string;
   currentUserUsername: string = '';
 
   roles: string[] = ['guest', 'keyOwner', 'admin'];
   locations: string[] = [
-    'Verona',
-    'Padova',
-    'Milano',
-    'Roma',
-    'Napoli',
-    'Como',
+    'verona',
+    'padova',
+    'milano',
+    'roma',
+    'napoli',
+    'como',
   ];
 
   constructor(
@@ -51,68 +51,112 @@ export class EditUtenteComponent implements OnInit {
   editUtenteForm = new FormGroup({});
 
   utenteLoggato: any;
+  sediRoleUtenteSelezionato: any;
   sediAdminUtenteLoggato: string[] = [];
   sediKeyOwnerUtenteLoggato: string[] = [];
 
   ngOnInit(): void {
-    this.userService.getCurrentUserData().subscribe((data) => {
-      this.utenteLoggato = data;
+    this.userService.getCurrentUserSediRole().subscribe((sediRole) => {
+      this.utenteLoggato = sediRole;
 
-      this.sediAdminUtenteLoggato = this.utenteLoggato.ruoli_sede
-        .filter((rs: any) => rs.ruolo_nome === 'admin')
-        .map((rs: any) => rs.sede_nome);
+      this.sediAdminUtenteLoggato = this.utenteLoggato
+        .filter((rs: any) => rs.role.name === 'admin')
+        .map((rs: any) => rs.sede.name);
 
-      this.sediKeyOwnerUtenteLoggato = this.utenteLoggato.ruoli_sede
-        .filter((rs: any) => rs.ruolo_nome === 'keyOwner')
-        .map((rs: any) => rs.sede_nome);
+      this.sediKeyOwnerUtenteLoggato = this.utenteLoggato
+        .filter((rs: any) => rs.role.name === 'keyOwner')
+        .map((rs: any) => rs.sede.name);
     });
 
-    this.idCurrentUser = this.idStateService.getSelectedUtenteId()!;
+    this.idSelectedUser = this.idStateService.getSelectedUtenteId()!;
 
     this.initializeForm();
 
     this.gestisciUtentiService.getAllUsers().subscribe((data) => {
       this.utenti = data;
-      const currentUser = data.find(
-        (user: any) => user.id === String(this.idCurrentUser)
-      );
-      if (currentUser) {
-        this.currentUserUsername = currentUser.username;
 
-        this.initializeRoleCheckboxes(
-          currentUser.ruoli_sede,
+      const currentUserRecords = data.filter(
+        (utente: any) => utente.user.id === +this.idSelectedUser
+      );
+
+      if (currentUserRecords.length > 0) {
+        this.currentUserUsername = currentUserRecords[0].user.username;
+
+        this.sediRoleUtenteSelezionato = currentUserRecords.map(
+          (record: any) => ({
+            ruolo_nome: record.role.name,
+            sede_nome: record.sede.name,
+          })
+        );
+
+        // Crea la rolesMap per l'utente che stai modificando
+        const rolesMap = this.createRolesMap(
+          this.sediRoleUtenteSelezionato, // Usa i ruoli dell'utente che stai modificando
           this.sediAdminUtenteLoggato,
           this.sediKeyOwnerUtenteLoggato
         );
+
+        // Inizializza i checkbox in base ai ruoli e sedi dell'utente
+        this.initializeRoleCheckboxes(rolesMap);
       }
     });
   }
 
-  initializeRoleCheckboxes(
-    ruoliSede: any[],
-    ruoliSedeUtenteLoggato: string[] = [],
-    ruoliSedeKeyOwner: string[] = []
-  ) {
-    const sediAdmin = ruoliSedeUtenteLoggato;
-    const sediKeyOwner = ruoliSedeKeyOwner;
-
-    this.roles.forEach((role) => {
-      this.locations.forEach((location) => {
+  initializeRoleCheckboxes(rolesMap: any) {
+    this.locations.forEach((location) => {
+      this.roles.forEach((role) => {
         const controlName = `${role}_${location}`;
+        const hasRole = rolesMap[location] && rolesMap[location][role];
+        const control = this.editUtenteForm.get(controlName);
+
+        // Imposta il valore per la selezione del ruolo
+        control?.setValue(hasRole);
+
+        // Disabilita i ruoli per le sedi dove l'utente loggato non è admin
+        if (!this.sediAdminUtenteLoggato.includes(location)) {
+          control?.disable();
+        }
+
+        control?.valueChanges.subscribe((isSelected: boolean) => {
+          if (isSelected) {
+            this.unselectOtherRolesForLocation(location, role);
+          }
+        });
+      });
+    });
+  }
+
+  createRolesMap(
+    ruoliSede: any[], // Ruoli dell'utente da modificare
+    sediAdmin: string[], // Sedi dove l'utente loggato è 'admin'
+    sediKeyOwner: string[] // Sedi dove l'utente loggato è 'keyOwner'
+  ): any {
+    const rolesMap: any = {};
+
+    this.locations.forEach((location) => {
+      // Inizializza la mappa per ogni sede
+      rolesMap[location] = {};
+
+      this.roles.forEach((role) => {
+        // Verifica se l'utente da modificare ha il ruolo in questa sede
         const hasRole = ruoliSede.some(
           (rs) => rs.sede_nome === location && rs.ruolo_nome === role
         );
 
-        this.editUtenteForm.get(controlName)?.setValue(hasRole);
-
-        if (!sediAdmin.includes(location) && !sediKeyOwner.includes(location)) {
-          this.editUtenteForm.get(controlName)?.disable();
-        }
-
-        if (sediKeyOwner.includes(location) && role !== 'keyOwner') {
-          this.editUtenteForm.get(controlName)?.disable();
-        }
+        // Assegna il valore per questa sede e ruolo
+        rolesMap[location][role] = hasRole;
       });
+    });
+
+    return rolesMap;
+  }
+
+  unselectOtherRolesForLocation(location: string, selectedRole: string) {
+    this.roles.forEach((role) => {
+      if (role !== selectedRole) {
+        const controlName = `${role}_${location}`;
+        this.editUtenteForm.get(controlName)?.setValue(false);
+      }
     });
   }
 
@@ -127,22 +171,35 @@ export class EditUtenteComponent implements OnInit {
 
   submitForm() {
     const formData = this.editUtenteForm.value;
-    const updatedRoles = [];
+    const updatedSediRoles = [];
+    const removedSediRoles = [];
 
     for (const [key, value] of Object.entries(formData)) {
+      const [role, location] = key.split('_');
+
       if (value) {
-        const [role, location] = key.split('_');
-        updatedRoles.push({ sede_nome: location, ruolo_nome: role });
+        // Aggiungi la sede-ruolo selezionata
+        updatedSediRoles.push({ sedeName: location, roleName: role });
+      } else {
+        // Memorizza le sedi-ruoli deselezionati per la rimozione
+        const existingRole = this.sediRoleUtenteSelezionato.find(
+          (sediRole: any) =>
+            sediRole.sede_nome === location && sediRole.ruolo_nome === role
+        );
+        if (existingRole) {
+          removedSediRoles.push({ sedeName: location, roleName: role });
+        }
       }
     }
 
     this.gestisciUtentiService
-      .updateUserRoles(+this.idCurrentUser, updatedRoles)
+      .updateUserRoles(+this.idSelectedUser, updatedSediRoles, removedSediRoles)
       .subscribe();
   }
 
   deleteUser() {
-    this.gestisciUtentiService.deleteUser(+this.idCurrentUser).subscribe();
+    this.gestisciUtentiService.deleteUser(+this.idSelectedUser).subscribe();
+    
   }
 
   chiudi() {

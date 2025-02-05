@@ -7,7 +7,6 @@
 
 .wrapper {
   position: relative;
-  max-width: 630px;
   width: 100%;
   background: #fff;
   padding: 34px;
@@ -20,6 +19,7 @@
   font-size: 22px;
   font-weight: 600;
   color: #333;
+  margin-bottom: 1rem;
 }
 
 .wrapper h2::before {

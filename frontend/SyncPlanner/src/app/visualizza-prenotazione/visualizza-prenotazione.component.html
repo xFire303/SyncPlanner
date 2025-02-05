@@ -4,42 +4,59 @@
     <button class="close-button" (click)="chiudi()">
       <i class="fas fa-times"></i>
     </button>
+
     <div class="input-box">
+      <label for="utente">Utente</label>
       <input type="text" [value]="utente" pInputText readonly />
     </div>
 
     <div class="input-box">
+      <label for="utente">Data prenotazione</label>
       <input type="text" [value]="data" pInputText readonly />
     </div>
 
     <div class="input-box">
-      <input type="text" [value]="sede" pInputText readonly />
+      <label for="utente">Sede</label>
+      <input type="text" [value]="sede | capitalize" pInputText readonly />
     </div>
 
     <div class="container-partecipanti">
       <h3>Partecipanti</h3>
       <div class="partecipanti-list">
-        @for(partecipante of partecipanti; track partecipante){
-        <p>{{ partecipante.username }},</p>
+        @for(partecipante of partecipantiList; track partecipante){
+        <p>{{ partecipante }},</p>
         }
       </div>
     </div>
-    @if(!seiGiaPartecipante){
+    @if(isDataLoaded){
+      @if(!proprietarioPrenotazione){
+        @if(!seiGiaPartecipante){
+            <div class="input-box button">
+              <input
+                type="submit"
+                value="Partecipa alla prenotazione"
+                (click)="aggiungitiAllaPrenotazione()"
+              />
+            </div>    
+        }@else{
+            <div class="input-box button">
+                <input
+                  type="submit"
+                  value="Rimuoviti dalla prenotazione"
+                  (click)="rimuovitiDallaPrenotazione()"
+                />
+              </div>    
+        }
+      }
+      @else{
         <div class="input-box button">
           <input
             type="submit"
-            value="Partecipa alla prenotazione"
-            (click)="aggiungitiAllaPrenotazione()"
+            value="Modifica prenotazione"
+            (click)="modificaPrenotazione()"
           />
-        </div>    
-    }@else{
-        <div class="input-box button">
-            <input
-              type="submit"
-              value="Rimuoviti dalla prenotazione"
-              (click)="rimuovitiDallaPrenotazione()"
-            />
-          </div>    
+        </div>
+      }
     }
   </div>
 </div>

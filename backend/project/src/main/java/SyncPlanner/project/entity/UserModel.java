@@ -1,5 +1,6 @@
 package SyncPlanner.project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,24 +31,13 @@ public class UserModel {
     @Column(name = "username", unique = true)
     private String username;
 
-    public String generateUsername() {
-        return name.toLowerCase() + Character.toUpperCase(surname.charAt(0));
-    };
-
     @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password")
     private String password;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_sede",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "sede_id")
-    )
-    private Set<SediModel> sedi;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<UserSedeRoleModel> userSedeRoles = new HashSet<>();
 }

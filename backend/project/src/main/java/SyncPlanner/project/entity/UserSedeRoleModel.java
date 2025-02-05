@@ -31,4 +31,9 @@ public class UserSedeRoleModel {
     @JoinColumn(name = "role_id")
     private RolesModel role;
 
+    public UserSedeRoleModel(UserModel user, SediModel sede, RolesModel role) {
+        this.user = user;
+        this.sede = sede;
+        this.role = role;
+    }
 }

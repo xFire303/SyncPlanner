@@ -34,7 +34,7 @@ import {
     InputGroupAddonModule,
     RouterModule,
     RouterOutlet,
-    MessagesModule,
+    MessagesModule
   ],
 })
 export class RegistratiComponent implements OnInit {
@@ -56,10 +56,6 @@ export class RegistratiComponent implements OnInit {
     this.initializeForm();
     this.sediForm.valueChanges.subscribe(() => {
       this.updateAlmenoUnaSedeSelezionata();
-    });
-
-    this.userService.getErrorMessage$.subscribe((message) => {
-      this.errorMessage = message;
     });
   }
 
@@ -117,17 +113,20 @@ export class RegistratiComponent implements OnInit {
     this.showRegistratiForm = true;
   }
 
-  async submitForm() {
+  submitForm() {
     if (this.registratiForm.valid) {
-      const emailExists = await this.userService.checkIfEmailAlreadyExists(
-        this.registratiForm.value
-      );
-      if (emailExists) {
-        this.errorMessage = 'Esiste già un utente con questa email';
-        this.showRegistratiForm = true;
-      } else {
-        this.showRegistratiForm = false;
-      }
+      this.userService.checkIfEmailAlreadyExists(this.registratiForm.value).subscribe(
+        (emailExists) => {
+          if (!emailExists) {
+            this.userService.getErrorMessage$.subscribe((message) => {
+              this.errorMessage = message;
+            })
+            this.showRegistratiForm = true;
+          } else {
+            this.showRegistratiForm = false;
+          }
+        }
+      )
     }
   }
 
@@ -147,7 +146,7 @@ export class RegistratiComponent implements OnInit {
         this.message = message;
       });
 
-      this.userService.register(userData).subscribe({});
+      this.userService.register(userData, selectedSedi).subscribe({});
     }
   }
 }

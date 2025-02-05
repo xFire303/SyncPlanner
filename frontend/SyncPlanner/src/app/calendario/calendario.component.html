@@ -8,7 +8,7 @@
     <app-add-prenotazione
       [data]="selectedDate"
       (close)="chiudiPrenotazione()"
-      (addPrenotazione)="onPrenotazioneAggiunta($event)"
+      (addPrenotazione)="onPrenotazioneAggiunta()"
     ></app-add-prenotazione>
   </div>
 </div>
@@ -49,6 +49,7 @@
         [data]="selectedDate"
         [sede]="selectedSede"
         (close)="chiudiVisualizzaPrenotazione()"
+        (apriGestisciPrenotazione)="apriGestisciPrenotazione($event)"
       ></app-visualizza-prenotazione>
     </div>
   </div>
