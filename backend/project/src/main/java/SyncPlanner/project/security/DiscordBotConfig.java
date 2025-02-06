@@ -1,4 +1,4 @@
-package SyncPlanner.project.security;
+/*package SyncPlanner.project.security;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -22,5 +22,5 @@ public class DiscordBotConfig {
             throw new IllegalStateException("Errore durante l'inizializzazione del bot Discord", e);
         }
     }
-}
+}*/
 
