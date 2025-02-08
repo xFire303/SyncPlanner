@@ -140,7 +140,6 @@ public class UserController {
 
     @DeleteMapping("/user/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer id, HttpServletRequest request) {
-        String token = jwtService.extractTokenFromHeader(request);
         if (userService.deleteUser(id)) {
             return ResponseEntity.ok().build();
         } else {

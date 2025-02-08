@@ -6,7 +6,6 @@ import SyncPlanner.project.service.BookingParticipantsService;
 import SyncPlanner.project.service.JWTService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +32,6 @@ public class BookingParticipantsController {
 
     @GetMapping("/bookingParticipants/{bookingId}")
     public ResponseEntity<List<BookingParticipantsModel>> getBookingParticipantsByBookingId(@PathVariable("bookingId") Integer bookingId, HttpServletRequest request) {
-        String token = jwtService.extractTokenFromHeader(request);
         List<BookingParticipantsModel> bookingParticipants = bookingParticipantsService.getBookingParticipantsByBookingId(bookingId);
 
         return ResponseEntity.ok(bookingParticipants);

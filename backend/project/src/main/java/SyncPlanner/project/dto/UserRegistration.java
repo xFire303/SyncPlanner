@@ -1,6 +1,5 @@
 package SyncPlanner.project.dto;
 
-import SyncPlanner.project.entity.SediModel;
 import SyncPlanner.project.entity.UserModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
