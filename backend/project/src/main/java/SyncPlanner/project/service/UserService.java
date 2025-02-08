@@ -55,7 +55,7 @@ public class UserService {
                 Integer userId = userDetails.getId();
                 return jwtService.generateToken(email, userId);
             } else {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenziali non valide");
             }
         } catch (BadCredentialsException ex) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email o password errati");
