@@ -1,4 +1,4 @@
-FROM openjdk:23-jdk-alpine
+FROM azul/zulu-openjdk:21-jdk-crac-latest
 
 ARG JAR_FILE=target/*.jar
 

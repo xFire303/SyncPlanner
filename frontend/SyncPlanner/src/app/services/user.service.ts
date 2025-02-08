@@ -88,7 +88,7 @@ export class UserService {
         tap(() => this.navigateTo('/home')),
         catchError((error) => {
           this.errorMessage$.next(error.error);
-          return throwError(() => error);
+          return throwError(() => error.error);
         })
       );
   }
