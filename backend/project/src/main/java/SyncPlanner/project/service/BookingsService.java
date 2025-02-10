@@ -31,9 +31,6 @@ public class BookingsService {
     @Autowired
     private BookingParticipantsRepo bookingParticipantsRepo;
 
-    //@Autowired
-    //private DiscordBotService discordBotService;
-
     private static final Map<String, String> SEDE_TO_DISCORD_ROLE = Map.of(
             "verona", "1308145201352671302", // ID ruolo per Verona
             "padova", "1308145246487445555", // ID ruolo per Padova
@@ -64,7 +61,6 @@ public class BookingsService {
                     bookingRequest.getUserUsername(),
                     bookingRequest.getDate()
             );
-            //discordBotService.sendMessageToThread(message);
         }
 
         if (sedeOptional.isEmpty()) {
@@ -101,7 +97,6 @@ public class BookingsService {
             if (bookingsRepo.findById(id).isPresent()) {
                 String discordRoleId = SEDE_TO_DISCORD_ROLE.get(bookingsRepo.findById(id).get().getSede().getName());
                 String message = "Ciao, <@&%s>, **%s** ha cancellato la prenotazione del %s".formatted(discordRoleId, bookingsRepo.findById(id).get().getUser().getUsername(), bookingsRepo.findById(id).get().getDate());
-                //discordBotService.sendMessageToThread(message);
 
                 bookingParticipantsRepo.deleteByBookingId(id);
                 bookingsRepo.deleteById(id);

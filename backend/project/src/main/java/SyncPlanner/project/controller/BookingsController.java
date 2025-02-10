@@ -4,7 +4,6 @@ import SyncPlanner.project.dto.BookingsRequest;
 import SyncPlanner.project.dto.UpdateBooking;
 import SyncPlanner.project.entity.BookingsModel;
 import SyncPlanner.project.service.BookingsService;
-//import SyncPlanner.project.service.DiscordBotService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +17,6 @@ import java.util.Optional;
 public class BookingsController {
     @Autowired
     private BookingsService bookingsService;
-
-
-    //@Autowired
-    //private DiscordBotService discordBotService;
 
     @PostMapping("/bookings")
     public ResponseEntity<Void> addBooking(@RequestBody BookingsRequest booking, HttpServletRequest request) {
